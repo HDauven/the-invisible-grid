@@ -914,7 +914,7 @@ input[type="range"] {
   transform: translateY(-3px);
 }
 
-.shape-card span {
+.shape-card > span {
   align-items: center;
   background: var(--ink);
   border-radius: 999px;
