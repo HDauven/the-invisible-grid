@@ -20,7 +20,8 @@ export default function Home() {
     { label: "Congestion", mobileLabel: "Chapter 3 · Congestion", id: "congestion" },
     { label: "Nuclear", mobileLabel: "Chapter 4 · Nuclear", id: "nuclear-finance" },
     { label: "Technologies", mobileLabel: "Chapter 5 · Technologies", id: "plant-jobs" },
-    { label: "Myths", mobileLabel: "Reference · Myths", id: "myths" }
+    { label: "Myths", mobileLabel: "Reference · Myths", id: "myths" },
+    { label: "Glossary", mobileLabel: "Reference · Glossary", id: "glossary" }
   ];
 
   return (
@@ -219,7 +220,7 @@ export default function Home() {
         </div>
       </section>
 
-      <section className="glossary-section" aria-labelledby="glossary-title">
+      <section className="glossary-section" id="glossary" aria-labelledby="glossary-title">
         <div className="section-heading">
           <p className="kicker">Reference</p>
           <h2 id="glossary-title">Glossary</h2>
