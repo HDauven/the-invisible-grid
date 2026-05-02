@@ -1,4 +1,5 @@
 import type { ReactNode } from "react";
+import { SourceFootnotes, type SourceLink } from "./SourceFootnotes";
 
 type ExplainerSectionProps = {
   kicker: string;
@@ -8,6 +9,7 @@ type ExplainerSectionProps = {
   figure: ReactNode;
   takeaway: string;
   id?: string;
+  sources?: SourceLink[];
 };
 
 export function ExplainerSection({
@@ -17,7 +19,8 @@ export function ExplainerSection({
   children,
   figure,
   takeaway,
-  id
+  id,
+  sources = []
 }: ExplainerSectionProps) {
   return (
     <section className="chapter" id={id}>
@@ -30,6 +33,7 @@ export function ExplainerSection({
         </div>
         <div className="prose">{children}</div>
         <p className="takeaway">{takeaway}</p>
+        <SourceFootnotes sources={sources} />
       </div>
       <div className="chapter-figure">{figure}</div>
     </section>

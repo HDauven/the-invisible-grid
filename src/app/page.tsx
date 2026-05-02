@@ -1,34 +1,31 @@
 import { ArrowDown, BookOpen, Cable, CircleGauge, SunMedium } from "lucide-react";
+import { ChapterMenu, type ChapterMenuItem } from "@/components/layout/ChapterMenu";
 import { ExplainerSection } from "@/components/layout/ExplainerSection";
+import { SourceFootnotes } from "@/components/layout/SourceFootnotes";
 import { CongestionBatteryInteractive } from "@/components/interactives/CongestionBatteryInteractive";
 import { FrequencyNeedle } from "@/components/interactives/FrequencyNeedle";
 import { NuclearFinancingInteractive } from "@/components/interactives/NuclearFinancingInteractive";
 import { PlantJobsInteractive } from "@/components/interactives/PlantJobsInteractive";
 import { SolarDuckInteractive } from "@/components/interactives/SolarDuckInteractive";
+import { chapterSources } from "@/content/chapterSources";
 import { glossary } from "@/content/glossary";
 import { myths } from "@/content/myths";
 import { sources } from "@/content/sources";
 
 export default function Home() {
-  const menuItems = [
-    ["Shapes", "shapes"],
-    ["50 Hz", "frequency"],
-    ["Solar", "solar"],
-    ["Congestion", "congestion"],
-    ["Nuclear", "nuclear-finance"],
-    ["Technologies", "plant-jobs"],
-    ["Myths", "myths-title"]
+  const menuItems: ChapterMenuItem[] = [
+    { label: "Shapes", id: "shapes" },
+    { label: "50 Hz", id: "frequency" },
+    { label: "Solar", id: "solar" },
+    { label: "Congestion", id: "congestion" },
+    { label: "Nuclear", id: "nuclear-finance" },
+    { label: "Technologies", id: "plant-jobs" },
+    { label: "Myths", id: "myths" }
   ];
 
   return (
     <main>
-      <nav className="chapter-menu" aria-label="Chapter menu">
-        {menuItems.map(([label, id]) => (
-          <a href={`#${id}`} key={id}>
-            {label}
-          </a>
-        ))}
-      </nav>
+      <ChapterMenu items={menuItems} />
 
       <section className="hero" aria-labelledby="hero-title">
         <div className="hero-copy">
@@ -82,20 +79,23 @@ export default function Home() {
           <p className="kicker">The spine of the story</p>
           <h2 id="shapes-title">Five Shapes Have to Fit</h2>
         </div>
-        <div className="shape-grid">
-          {[
-            ["Time shape", "when power is produced or needed"],
-            ["Location shape", "where power is produced or needed"],
-            ["Flexibility shape", "how fast something can respond"],
-            ["Stability shape", "how it affects frequency and resilience"],
-            ["Cost/risk shape", "what hidden costs or risks it creates"]
-          ].map(([title, copy], index) => (
-            <article className="shape-card" key={title}>
-              <span>{index + 1}</span>
-              <h3>{title}</h3>
-              <p>{copy}</p>
-            </article>
-          ))}
+        <div className="shape-body">
+          <div className="shape-grid">
+            {[
+              ["Time shape", "when power is produced or needed"],
+              ["Location shape", "where power is produced or needed"],
+              ["Flexibility shape", "how fast something can respond"],
+              ["Stability shape", "how it affects frequency and resilience"],
+              ["Cost/risk shape", "what hidden costs or risks it creates"]
+            ].map(([title, copy], index) => (
+              <article className="shape-card" key={title}>
+                <span>{index + 1}</span>
+                <h3>{title}</h3>
+                <p>{copy}</p>
+              </article>
+            ))}
+          </div>
+          <SourceFootnotes sources={chapterSources.shapes} />
         </div>
       </section>
 
@@ -106,6 +106,7 @@ export default function Home() {
         misconception="Electricity is produced somewhere, stored somewhere, and then used later."
         takeaway="The grid does not run on averages."
         figure={<FrequencyNeedle />}
+        sources={chapterSources.frequency}
       >
         <p>
           The electricity grid is a live balancing system. At every moment, supply and
@@ -125,6 +126,7 @@ export default function Home() {
         misconception="Solar is cheap, so adding more solar simply makes electricity cheaper."
         takeaway="Solar solves part of the day. The rest of the system has to solve the rest."
         figure={<SolarDuckInteractive />}
+        sources={chapterSources.solar}
       >
         <p>
           Solar is powerful because it can produce large amounts of cheap electricity
@@ -145,6 +147,7 @@ export default function Home() {
         misconception="If the country produces enough electricity, everyone can use it."
         takeaway="Enough energy nationally does not mean enough capacity locally."
         figure={<CongestionBatteryInteractive />}
+        sources={chapterSources.congestion}
       >
         <p>
           Electricity has to move through specific lines, transformers, and substations.
@@ -165,6 +168,7 @@ export default function Home() {
         misconception="Nuclear is expensive, full stop."
         takeaway="Nuclear cost is about time and risk, not just construction materials."
         figure={<NuclearFinancingInteractive />}
+        sources={chapterSources.nuclear}
       >
         <p>
           Nuclear power plants are capital-heavy. Much of the cost is paid before the
@@ -184,6 +188,7 @@ export default function Home() {
         misconception="A power plant is a power plant."
         takeaway="Technologies are not interchangeable. They have different behaviors."
         figure={<PlantJobsInteractive />}
+        sources={chapterSources.plants}
       >
         <p>
           Different technologies solve different grid problems. Some are good at firm
@@ -196,7 +201,7 @@ export default function Home() {
         </p>
       </ExplainerSection>
 
-      <section className="myths-section" aria-labelledby="myths-title">
+      <section className="myths-section" id="myths" aria-labelledby="myths-title">
         <div className="section-heading">
           <p className="kicker">Common shortcuts</p>
           <h2 id="myths-title">Things People Say About Electricity</h2>
