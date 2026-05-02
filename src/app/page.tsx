@@ -14,13 +14,13 @@ import { sources } from "@/content/sources";
 
 export default function Home() {
   const menuItems: ChapterMenuItem[] = [
-    { label: "Shapes", id: "shapes" },
-    { label: "50 Hz", id: "frequency" },
-    { label: "Solar", id: "solar" },
-    { label: "Congestion", id: "congestion" },
-    { label: "Nuclear", id: "nuclear-finance" },
-    { label: "Technologies", id: "plant-jobs" },
-    { label: "Myths", id: "myths" }
+    { label: "Shapes", mobileLabel: "Framing · Shapes", id: "shapes" },
+    { label: "50 Hz", mobileLabel: "Chapter 1 · 50 Hz", id: "frequency" },
+    { label: "Solar", mobileLabel: "Chapter 2 · Solar", id: "solar" },
+    { label: "Congestion", mobileLabel: "Chapter 3 · Congestion", id: "congestion" },
+    { label: "Nuclear", mobileLabel: "Chapter 4 · Nuclear", id: "nuclear-finance" },
+    { label: "Technologies", mobileLabel: "Chapter 5 · Technologies", id: "plant-jobs" },
+    { label: "Myths", mobileLabel: "Reference · Myths", id: "myths" }
   ];
 
   return (
@@ -82,15 +82,18 @@ export default function Home() {
         <div className="shape-body">
           <div className="shape-grid">
             {[
-              ["Time shape", "when power is produced or needed"],
-              ["Location shape", "where power is produced or needed"],
-              ["Flexibility shape", "how fast something can respond"],
-              ["Stability shape", "how it affects frequency and resilience"],
-              ["Cost/risk shape", "what hidden costs or risks it creates"]
-            ].map(([title, copy], index) => (
+              ["Time shape", "Time", "when power is produced or needed"],
+              ["Location shape", "Location", "where power is produced or needed"],
+              ["Flexibility shape", "Flexibility", "how fast something can respond"],
+              ["Stability shape", "Stability", "how it affects frequency and resilience"],
+              ["Cost/risk shape", "Cost/risk", "what hidden costs or risks it creates"]
+            ].map(([title, mobileTitle, copy], index) => (
               <article className="shape-card" key={title}>
                 <span>{index + 1}</span>
-                <h3>{title}</h3>
+                <h3>
+                  <span className="shape-title-full">{title}</span>
+                  <span className="shape-title-short">{mobileTitle}</span>
+                </h3>
                 <p>{copy}</p>
               </article>
             ))}

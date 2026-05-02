@@ -1,7 +1,7 @@
 "use client";
 
 import { Factory, Info } from "lucide-react";
-import { useMemo, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { plantProfiles, type PlantId } from "@/data/plantProfiles";
 import { plantBehavior } from "@/lib/model/plantBehavior";
 import { HOURS } from "@/lib/model/curve";
@@ -42,8 +42,18 @@ function areaPath(values: number[]) {
 
 export function PlantJobsInteractive() {
   const [selectedId, setSelectedId] = useState<PlantId>("nuclear");
+  const [traitsOpen, setTraitsOpen] = useState(true);
   const selected = plantProfiles.find((profile) => profile.id === selectedId) ?? plantProfiles[0];
   const state = useMemo(() => plantBehavior(selected), [selected]);
+
+  useEffect(() => {
+    const query = window.matchMedia("(max-width: 640px)");
+    const update = () => setTraitsOpen(!query.matches);
+
+    update();
+    query.addEventListener("change", update);
+    return () => query.removeEventListener("change", update);
+  }, []);
 
   return (
     <div className="interactive plant-panel">
@@ -101,20 +111,24 @@ export function PlantJobsInteractive() {
       </p>
 
       <div className="trait-panel">
-        <div className="trait-heading">
-          <Info aria-hidden="true" size={16} />
-          Visual teaching traits, not universal rankings
-        </div>
-        {traitLabels.map(([key, label]) => (
-          <div className="trait-row" key={key}>
-            <span>{label}</span>
-            <i aria-label={`${label}: ${selected.traits[key]} out of 5`}>
-              {Array.from({ length: 5 }, (_, index) => (
-                <b key={index} data-filled={index < selected.traits[key]} />
-              ))}
-            </i>
+        <details open={traitsOpen} onToggle={(event) => setTraitsOpen(event.currentTarget.open)}>
+          <summary className="trait-heading">
+            <Info aria-hidden="true" size={16} />
+            Show visual teaching traits
+          </summary>
+          <div className="trait-list">
+            {traitLabels.map(([key, label]) => (
+              <div className="trait-row" key={key}>
+                <span>{label}</span>
+                <i aria-label={`${label}: ${selected.traits[key]} out of 5`}>
+                  {Array.from({ length: 5 }, (_, index) => (
+                    <b key={index} data-filled={index < selected.traits[key]} />
+                  ))}
+                </i>
+              </div>
+            ))}
           </div>
-        ))}
+        </details>
       </div>
     </div>
   );

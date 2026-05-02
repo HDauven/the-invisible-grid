@@ -171,17 +171,19 @@ export function NuclearFinancingInteractive() {
       </div>
 
       <div className="provided-list">
-        <span>
-          <TimerReset aria-hidden="true" size={16} />
-          After completion
-        </span>
-        <ul>
-          <li>firm low-carbon output</li>
-          <li>high capacity factor</li>
-          <li>low fuel-price exposure</li>
-          <li>stability value</li>
-          <li>long asset life</li>
-        </ul>
+        <details>
+          <summary>
+            <TimerReset aria-hidden="true" size={16} />
+            After completion
+          </summary>
+          <ul>
+            <li>firm low-carbon output</li>
+            <li>high capacity factor</li>
+            <li>low fuel-price exposure</li>
+            <li>stability value</li>
+            <li>long asset life</li>
+          </ul>
+        </details>
       </div>
     </div>
   );

@@ -99,6 +99,10 @@ main {
   color: var(--ink);
 }
 
+.chapter-menu-mobile {
+  display: none;
+}
+
 .hero {
   align-items: center;
   display: grid;
@@ -931,6 +935,10 @@ input[type="range"] {
   margin: 0.85rem 0 0.55rem;
 }
 
+.shape-title-short {
+  display: none;
+}
+
 .shape-card p {
   color: var(--muted);
   font-size: 0.92rem;
@@ -1151,10 +1159,11 @@ input[type="range"] {
 }
 
 .provided-list > span,
+.provided-list summary,
 .trait-heading {
   align-items: center;
   color: var(--ink);
-  display: inline-flex;
+  display: flex;
   font-weight: 780;
   gap: 0.45rem;
 }
@@ -1168,6 +1177,30 @@ input[type="range"] {
 
 .provided-list li {
   margin-bottom: 0.35rem;
+}
+
+.provided-list summary,
+.trait-heading {
+  cursor: pointer;
+  list-style: none;
+}
+
+.provided-list summary::-webkit-details-marker,
+.trait-heading::-webkit-details-marker {
+  display: none;
+}
+
+.provided-list summary::after,
+.trait-heading::after {
+  color: var(--muted);
+  content: "+";
+  font-weight: 780;
+  margin-left: auto;
+}
+
+.provided-list details[open] summary::after,
+.trait-panel details[open] .trait-heading::after {
+  content: "-";
 }
 
 .plant-card-grid {
@@ -1277,6 +1310,16 @@ input[type="range"] {
   gap: 0.65rem;
   margin-top: 1rem;
   padding-top: 1rem;
+}
+
+.trait-panel details {
+  min-width: 0;
+}
+
+.trait-list {
+  display: grid;
+  gap: 0.65rem;
+  margin-top: 0.75rem;
 }
 
 .trait-row {
@@ -1453,6 +1496,10 @@ footer {
 }
 
 @media (max-width: 640px) {
+  html {
+    scroll-padding-top: 5.8rem;
+  }
+
   body {
     background: var(--paper);
   }
@@ -1477,7 +1524,7 @@ footer {
 
   .hero {
     gap: 1rem;
-    padding-top: 4.7rem;
+    padding-top: 5.55rem;
   }
 
   .hero-copy > p:not(.eyebrow):not(.hero-lede) {
@@ -1505,7 +1552,7 @@ footer {
   .chapter {
     gap: 1.35rem;
     padding-bottom: 3.2rem;
-    padding-top: 3.2rem;
+    padding-top: 2.85rem;
   }
 
   .misconception {
@@ -1570,7 +1617,6 @@ footer {
   .control-grid,
   .glossary-list,
   .myth-grid,
-  .shape-grid,
   .plant-card-grid {
     grid-template-columns: 1fr;
   }
@@ -1597,10 +1643,6 @@ footer {
     columns: 1;
   }
 
-  .provided-list ul {
-    columns: 1;
-  }
-
   .trait-row {
     grid-template-columns: 1fr;
   }
@@ -1610,35 +1652,142 @@ footer {
     padding: 1.15rem;
   }
 
-  .chapter-menu {
-    border-left: 0;
-    border-radius: 0;
-    border-right: 0;
-    left: 0;
-    max-width: none;
-    right: 0;
-    top: 0;
-    transform: none;
-    width: 100%;
+  .chapter-menu-desktop {
+    display: none;
   }
 
-  .chapter-menu a {
-    font-size: 0.74rem;
-    padding: 0.48rem 0.62rem;
+  .chapter-menu-mobile {
+    display: block;
+    left: 1rem;
+    position: fixed;
+    right: 1rem;
+    top: 0.78rem;
+    z-index: 30;
+  }
+
+  .chapter-menu-mobile summary {
+    align-items: center;
+    backdrop-filter: blur(18px);
+    background: rgba(255, 253, 248, 0.94);
+    border: 1px solid rgba(23, 32, 29, 0.14);
+    border-radius: 999px;
+    box-shadow: 0 14px 34px rgba(33, 37, 34, 0.1);
+    color: var(--ink);
+    cursor: pointer;
+    display: flex;
+    font-size: 0.9rem;
+    font-weight: 800;
+    gap: 0.75rem;
+    justify-content: space-between;
+    line-height: 1;
+    list-style: none;
+    min-height: 44px;
+    padding: 0.68rem 0.9rem 0.68rem 1rem;
+  }
+
+  .chapter-menu-mobile summary::-webkit-details-marker {
+    display: none;
+  }
+
+  .chapter-menu-mobile summary::after {
+    border-bottom: 2px solid currentColor;
+    border-right: 2px solid currentColor;
+    color: var(--muted);
+    content: "";
+    height: 0.42rem;
+    transform: rotate(45deg) translateY(-1px);
+    transition: transform 160ms ease;
+    width: 0.42rem;
+  }
+
+  .chapter-menu-mobile[open] summary::after {
+    transform: rotate(225deg) translateY(-1px);
+  }
+
+  .chapter-menu-mobile nav {
+    backdrop-filter: blur(18px);
+    background: rgba(255, 253, 248, 0.98);
+    border: 1px solid rgba(23, 32, 29, 0.12);
+    border-radius: 8px;
+    box-shadow: 0 22px 50px rgba(33, 37, 34, 0.14);
+    display: grid;
+    gap: 0.15rem;
+    margin-top: 0.45rem;
+    max-height: min(70vh, 420px);
+    overflow-y: auto;
+    padding: 0.4rem;
+  }
+
+  .chapter-menu-mobile a {
+    border-radius: 6px;
+    color: var(--muted);
+    font-size: 0.92rem;
+    font-weight: 760;
+    padding: 0.78rem 0.8rem;
+    text-decoration: none;
+  }
+
+  .chapter-menu-mobile a:focus-visible,
+  .chapter-menu-mobile a:hover {
+    background: rgba(23, 32, 29, 0.06);
+    color: var(--ink);
+  }
+
+  .chapter-menu-mobile a[data-active="true"] {
+    background: rgba(47, 111, 143, 0.08);
+    box-shadow: inset 3px 0 0 var(--net);
+    color: var(--ink);
+  }
+
+  .shapes-section {
+    gap: 1rem;
+    padding-bottom: 2.2rem;
+    padding-top: 2.5rem;
+  }
+
+  .shapes-section h2 {
+    max-width: 11ch;
+  }
+
+  .shape-grid {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.5rem;
   }
 
   .shape-card {
+    flex: 1 1 calc(50% - 0.5rem);
     min-height: 0;
-    padding: 0.85rem;
+    padding: 0.68rem 0.72rem;
+  }
+
+  .shape-card > span {
+    display: none;
   }
 
   .shape-card h3 {
-    font-size: 1.16rem;
-    margin-top: 0.65rem;
+    font-family: Inter, ui-sans-serif, system-ui, sans-serif;
+    font-size: 0.94rem;
+    font-weight: 820;
+    margin: 0 0 0.2rem;
+  }
+
+  .shape-title-full {
+    display: none;
+  }
+
+  .shape-title-short {
+    display: inline;
   }
 
   .shape-card p {
-    font-size: 0.86rem;
+    font-size: 0.75rem;
+    line-height: 1.32;
+    margin: 0;
+  }
+
+  .shape-body .section-sources {
+    margin-top: 0.7rem;
   }
 
   .plant-card-grid {
@@ -1664,16 +1813,55 @@ footer {
     gap: 0.8rem;
   }
 
+  .trait-heading {
+    align-items: center;
+    background: rgba(47, 111, 143, 0.07);
+    border-radius: 8px;
+    display: flex;
+    padding: 0.72rem 0.78rem;
+    width: 100%;
+  }
+
   .trait-row {
     gap: 0.35rem;
   }
 
+  .trait-list {
+    gap: 0.7rem;
+  }
+
+  .finance-bars {
+    display: none;
+  }
+
   .kwh-panel {
+    margin-top: 0.75rem;
     padding: 0.8rem;
   }
 
   .kwh-intro strong {
     font-size: 2.1rem;
+  }
+
+  .kwh-bars span {
+    font-size: 0.8rem;
+  }
+
+  .provided-list {
+    padding: 0;
+  }
+
+  .provided-list summary {
+    align-items: center;
+    display: flex;
+    padding: 0.86rem 0.9rem;
+    width: 100%;
+  }
+
+  .provided-list ul {
+    columns: 1;
+    margin: 0;
+    padding: 0 1rem 0.85rem 2rem;
   }
 
   .national-card {

@@ -5,6 +5,7 @@ import { useEffect, useRef, useState } from "react";
 export type ChapterMenuItem = {
   id: string;
   label: string;
+  mobileLabel?: string;
 };
 
 type ChapterMenuProps = {
@@ -14,6 +15,8 @@ type ChapterMenuProps = {
 export function ChapterMenu({ items }: ChapterMenuProps) {
   const [activeId, setActiveId] = useState(items[0]?.id ?? "");
   const linkRefs = useRef(new Map<string, HTMLAnchorElement>());
+  const mobileDetailsRef = useRef<HTMLDetailsElement>(null);
+  const activeItem = items.find((item) => item.id === activeId) ?? items[0];
 
   useEffect(() => {
     const sections = items
@@ -65,24 +68,49 @@ export function ChapterMenu({ items }: ChapterMenuProps) {
   }, [activeId]);
 
   return (
-    <nav className="chapter-menu" aria-label="Chapter menu">
-      {items.map((item) => (
-        <a
-          href={`#${item.id}`}
-          key={item.id}
-          ref={(node) => {
-            if (node) {
-              linkRefs.current.set(item.id, node);
-            } else {
-              linkRefs.current.delete(item.id);
-            }
-          }}
-          aria-current={activeId === item.id ? "location" : undefined}
-          data-active={activeId === item.id}
-        >
-          {item.label}
-        </a>
-      ))}
-    </nav>
+    <>
+      <nav className="chapter-menu chapter-menu-desktop" aria-label="Chapter menu">
+        {items.map((item) => (
+          <a
+            href={`#${item.id}`}
+            key={item.id}
+            ref={(node) => {
+              if (node) {
+                linkRefs.current.set(item.id, node);
+              } else {
+                linkRefs.current.delete(item.id);
+              }
+            }}
+            aria-current={activeId === item.id ? "location" : undefined}
+            data-active={activeId === item.id}
+          >
+            {item.label}
+          </a>
+        ))}
+      </nav>
+
+      <details className="chapter-menu-mobile" ref={mobileDetailsRef}>
+        <summary aria-label={`Current section: ${activeItem?.mobileLabel ?? activeItem?.label}`}>
+          <span>{activeItem?.mobileLabel ?? activeItem?.label}</span>
+        </summary>
+        <nav aria-label="Mobile chapter menu">
+          {items.map((item) => (
+            <a
+              href={`#${item.id}`}
+              key={item.id}
+              aria-current={activeId === item.id ? "location" : undefined}
+              data-active={activeId === item.id}
+              onClick={() => {
+                if (mobileDetailsRef.current) {
+                  mobileDetailsRef.current.open = false;
+                }
+              }}
+            >
+              {item.mobileLabel ?? item.label}
+            </a>
+          ))}
+        </nav>
+      </details>
+    </>
   );
 }
