@@ -21,6 +21,16 @@ export const chapterSources = {
       href: "https://www.entsoe.eu/publications/system-operations-reports/"
     }
   ],
+  demand: [
+    {
+      label: "U.S. EIA - Electricity explained: use of electricity",
+      href: "https://www.eia.gov/energyexplained/electricity/use-of-electricity.php"
+    },
+    {
+      label: "IEA - Demand response",
+      href: "https://www.iea.org/energy-system/energy-efficiency-and-demand/demand-response"
+    }
+  ],
   solar: [
     {
       label: "IEA - Integrating Solar and Wind",
@@ -29,6 +39,16 @@ export const chapterSources = {
     {
       label: "IEA - Renewable integration and flexibility",
       href: "https://www.iea.org/reports/integrating-solar-and-wind/executive-summary"
+    }
+  ],
+  weather: [
+    {
+      label: "IEA - Integrating Solar and Wind",
+      href: "https://www.iea.org/reports/integrating-solar-and-wind"
+    },
+    {
+      label: "ENTSO-E - System operations reports",
+      href: "https://www.entsoe.eu/publications/system-operations-reports/"
     }
   ],
   congestion: [
@@ -59,6 +79,16 @@ export const chapterSources = {
     {
       label: "U.S. EIA - Natural gas-fired electricity conversion technologies",
       href: "https://www.eia.gov/todayinenergy/detail.php?id=15031"
+    }
+  ],
+  systemValue: [
+    {
+      label: "OECD NEA - The Costs of Decarbonisation",
+      href: "https://www.oecd-nea.org/jcms/pl_15000/the-costs-of-decarbonisation-system-costs-with-high-shares-of-nuclear-and-renewables"
+    },
+    {
+      label: "IEA - Electricity Grids and Secure Energy Transitions",
+      href: "https://www.iea.org/reports/electricity-grids-and-secure-energy-transitions"
     }
   ]
 } satisfies Record<string, SourceLink[]>;

@@ -331,6 +331,24 @@ p {
   padding-top: 1rem;
 }
 
+.inline-note {
+  background: rgba(47, 111, 143, 0.06);
+  border-left: 3px solid rgba(47, 111, 143, 0.36);
+  color: var(--muted);
+  margin: 1rem 0;
+  padding: 0.75rem 0.85rem;
+}
+
+.inline-note summary {
+  color: var(--ink);
+  cursor: pointer;
+  font-weight: 760;
+}
+
+.inline-note p {
+  margin: 0.55rem 0 0;
+}
+
 .section-sources {
   border-top: 1px solid rgba(23, 32, 29, 0.12);
   color: var(--muted);
@@ -494,7 +512,7 @@ p {
   opacity: 0.7;
   stroke: var(--stress);
   stroke-width: 2;
-  transform-origin: 260px 236px;
+  transform-origin: 260px 266px;
   animation: warning-pulse 1200ms ease-in-out infinite;
 }
 
@@ -614,6 +632,7 @@ input[type="range"] {
 
 .demand-line,
 .solar-line,
+.wind-line,
 .net-line {
   fill: none;
   stroke-linecap: round;
@@ -636,13 +655,35 @@ input[type="range"] {
   stroke: var(--demand);
 }
 
+.demand-area {
+  fill: rgba(23, 32, 29, 0.08);
+}
+
 .solar-line {
   stroke: var(--solar);
+}
+
+.wind-line {
+  stroke: var(--wind);
 }
 
 .net-line {
   stroke: var(--net);
   stroke-dasharray: 8 8;
+}
+
+.solar-area {
+  fill: rgba(216, 155, 33, 0.14);
+}
+
+.wind-area {
+  fill: rgba(40, 127, 128, 0.12);
+}
+
+.chart-dot {
+  fill: var(--surface);
+  stroke: var(--demand);
+  stroke-width: 3;
 }
 
 .curtailment-area {
@@ -696,6 +737,10 @@ input[type="range"] {
 
 .direct-label.net {
   fill: var(--net);
+}
+
+.direct-label.wind {
+  fill: var(--wind);
 }
 
 .map-grid {
@@ -956,6 +1001,83 @@ input[type="range"] {
 
 .visual-moment span {
   display: block;
+}
+
+.system-value-grid {
+  display: grid;
+  gap: 1rem;
+  grid-template-columns: minmax(220px, 0.8fr) minmax(0, 1.2fr);
+}
+
+.system-value-grid section {
+  background: rgba(242, 238, 229, 0.5);
+  border: 1px solid rgba(23, 32, 29, 0.1);
+  border-radius: 8px;
+  padding: 0.95rem;
+}
+
+.system-value-grid h3 {
+  font-size: 0.95rem;
+  margin: 0 0 0.8rem;
+}
+
+.system-cost-row {
+  display: grid;
+  gap: 0.35rem;
+  margin-top: 0.7rem;
+}
+
+.system-cost-row span {
+  color: var(--muted);
+  font-size: 0.86rem;
+  font-weight: 720;
+}
+
+.system-cost-row i {
+  display: grid;
+  gap: 0.28rem;
+  grid-template-columns: repeat(5, minmax(0, 1fr));
+}
+
+.system-cost-row b {
+  background: rgba(23, 32, 29, 0.11);
+  border-radius: 999px;
+  display: block;
+  height: 10px;
+}
+
+.system-cost-row b[data-filled="true"] {
+  background: var(--net);
+}
+
+.system-effect-grid {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.45rem;
+}
+
+.system-effect-grid span {
+  background: rgba(23, 32, 29, 0.08);
+  border: 1px solid rgba(23, 32, 29, 0.1);
+  border-radius: 999px;
+  color: var(--muted);
+  font-size: 0.84rem;
+  font-weight: 720;
+  padding: 0.45rem 0.58rem;
+}
+
+.system-effect-grid span[data-level="0"],
+.system-effect-grid span[data-level="1"] {
+  background: rgba(118, 148, 109, 0.13);
+  border-color: rgba(118, 148, 109, 0.25);
+  color: var(--ink);
+}
+
+.system-effect-grid span[data-level="4"],
+.system-effect-grid span[data-level="5"] {
+  background: rgba(194, 122, 34, 0.12);
+  border-color: rgba(194, 122, 34, 0.28);
+  color: var(--ink);
 }
 
 .myths-section,
@@ -1591,6 +1713,8 @@ footer {
   }
 
   .duck-chart.detail-svg,
+  .demand-chart.detail-svg,
+  .weather-chart.detail-svg,
   .finance-chart.detail-svg {
     min-width: 620px;
   }
@@ -1661,7 +1785,7 @@ footer {
     left: 1rem;
     position: fixed;
     right: 1rem;
-    top: 0.78rem;
+    top: 0.55rem;
     z-index: 30;
   }
 
@@ -1681,8 +1805,8 @@ footer {
     justify-content: space-between;
     line-height: 1;
     list-style: none;
-    min-height: 44px;
-    padding: 0.68rem 0.9rem 0.68rem 1rem;
+    min-height: 40px;
+    padding: 0.58rem 0.86rem 0.58rem 0.95rem;
   }
 
   .chapter-menu-mobile summary::-webkit-details-marker {
@@ -1713,7 +1837,7 @@ footer {
     display: grid;
     gap: 0.15rem;
     margin-top: 0.45rem;
-    max-height: min(70vh, 420px);
+    max-height: min(76vh, 560px);
     overflow-y: auto;
     padding: 0.4rem;
   }
@@ -1862,6 +1986,18 @@ footer {
     columns: 1;
     margin: 0;
     padding: 0 1rem 0.85rem 2rem;
+  }
+
+  .system-value-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .system-value-grid section {
+    padding: 0.82rem;
+  }
+
+  .system-effect-grid span {
+    font-size: 0.78rem;
   }
 
   .national-card {

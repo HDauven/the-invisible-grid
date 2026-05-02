@@ -40,6 +40,61 @@ export const glossary = [
       "Extra available capacity or response kept ready in case demand rises, generation falls, or equipment trips."
   },
   {
+    term: "Dispatchable generation",
+    definition:
+      "Generation that can be controlled to produce when needed, within its technical operating limits."
+  },
+  {
+    term: "Variable generation",
+    definition:
+      "Generation that depends on weather or natural conditions, such as solar and wind."
+  },
+  {
+    term: "Firm capacity",
+    definition:
+      "Capacity the system can count on during stressed periods, after accounting for outages and operating limits."
+  },
+  {
+    term: "Capacity factor",
+    definition:
+      "Actual electricity produced compared with the maximum possible output if a plant ran at full power all the time."
+  },
+  {
+    term: "Demand response",
+    definition:
+      "Demand that can shift, reduce, or increase in response to grid needs or price signals."
+  },
+  {
+    term: "Transmission",
+    definition:
+      "High-voltage networks that move large amounts of electricity over long distances."
+  },
+  {
+    term: "Distribution",
+    definition:
+      "Lower-voltage local networks that deliver electricity to homes, businesses, and many smaller sites."
+  },
+  {
+    term: "Ancillary services",
+    definition:
+      "Grid services such as frequency response, reserves, voltage support, and balancing that keep the system stable."
+  },
+  {
+    term: "Ramp rate",
+    definition:
+      "How quickly a generator, battery, or demand source can change its power output or consumption."
+  },
+  {
+    term: "Startup time",
+    definition:
+      "How long a plant takes to begin producing from a stopped or cold state. It is different from ramp rate."
+  },
+  {
+    term: "Negative prices",
+    definition:
+      "Prices below zero, often signaling temporary oversupply, congestion, inflexible output, or too little flexible demand or storage."
+  },
+  {
     term: "LCOE",
     definition:
       "Levelized cost of electricity. A plant-level cost estimate per unit of electricity, useful but incomplete for system planning."

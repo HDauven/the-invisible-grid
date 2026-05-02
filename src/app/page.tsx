@@ -3,10 +3,13 @@ import { ChapterMenu, type ChapterMenuItem } from "@/components/layout/ChapterMe
 import { ExplainerSection } from "@/components/layout/ExplainerSection";
 import { SourceFootnotes } from "@/components/layout/SourceFootnotes";
 import { CongestionBatteryInteractive } from "@/components/interactives/CongestionBatteryInteractive";
+import { DailyDemandInteractive } from "@/components/interactives/DailyDemandInteractive";
 import { FrequencyNeedle } from "@/components/interactives/FrequencyNeedle";
 import { NuclearFinancingInteractive } from "@/components/interactives/NuclearFinancingInteractive";
 import { PlantJobsInteractive } from "@/components/interactives/PlantJobsInteractive";
 import { SolarDuckInteractive } from "@/components/interactives/SolarDuckInteractive";
+import { SystemValueInteractive } from "@/components/interactives/SystemValueInteractive";
+import { WeatherShapeInteractive } from "@/components/interactives/WeatherShapeInteractive";
 import { chapterSources } from "@/content/chapterSources";
 import { glossary } from "@/content/glossary";
 import { myths } from "@/content/myths";
@@ -16,10 +19,13 @@ export default function Home() {
   const menuItems: ChapterMenuItem[] = [
     { label: "Shapes", mobileLabel: "Framing · Shapes", id: "shapes" },
     { label: "50 Hz", mobileLabel: "Chapter 1 · 50 Hz", id: "frequency" },
-    { label: "Solar", mobileLabel: "Chapter 2 · Solar", id: "solar" },
-    { label: "Congestion", mobileLabel: "Chapter 3 · Congestion", id: "congestion" },
-    { label: "Nuclear", mobileLabel: "Chapter 4 · Nuclear", id: "nuclear-finance" },
-    { label: "Technologies", mobileLabel: "Chapter 5 · Technologies", id: "plant-jobs" },
+    { label: "Demand", mobileLabel: "Chapter 2 · Demand", id: "daily-demand" },
+    { label: "Solar", mobileLabel: "Chapter 3 · Solar", id: "solar" },
+    { label: "Weather", mobileLabel: "Chapter 4 · Weather", id: "weather" },
+    { label: "Congestion", mobileLabel: "Chapter 5 · Congestion", id: "congestion" },
+    { label: "Nuclear", mobileLabel: "Chapter 6 · Nuclear", id: "nuclear-finance" },
+    { label: "Technologies", mobileLabel: "Chapter 7 · Technologies", id: "plant-jobs" },
+    { label: "System value", mobileLabel: "Chapter 8 · System value", id: "system-value" },
     { label: "Myths", mobileLabel: "Reference · Myths", id: "myths" },
     { label: "Glossary", mobileLabel: "Reference · Glossary", id: "glossary" }
   ];
@@ -107,7 +113,7 @@ export default function Home() {
         id="frequency"
         kicker="Chapter 1"
         title="Electricity Is Live"
-        misconception="Electricity is produced somewhere, stored somewhere, and then used later."
+        misconception="Electricity works like a warehouse: produce it, store it, use it later."
         takeaway="The grid does not run on averages."
         figure={<FrequencyNeedle />}
         sources={chapterSources.frequency}
@@ -117,15 +123,38 @@ export default function Home() {
           demand have to match closely.
         </p>
         <p>
-          When demand rises faster than supply, frequency falls. When supply exceeds
-          demand, frequency rises. Operators need controllable response right now, not
-          only enough energy over the whole day.
+          Frequency is the grid&apos;s heartbeat. It moves when supply and demand drift
+          apart: when demand rises faster than supply, frequency falls. When supply
+          exceeds demand, frequency rises.
+        </p>
+        <p>
+          Operators need controllable response right now, not only enough energy over
+          the whole day. The grid is not a warehouse. It is a live balance.
+        </p>
+      </ExplainerSection>
+
+      <ExplainerSection
+        id="daily-demand"
+        kicker="Chapter 2"
+        title="A Day Has a Shape"
+        misconception="Electricity demand is basically constant."
+        takeaway="The grid does not serve an average day. It serves every moment of the day."
+        figure={<DailyDemandInteractive />}
+        sources={chapterSources.demand}
+      >
+        <p>
+          Demand has a daily rhythm. Homes, offices, factories, heating, cooling, and
+          charging do not all ask for power at the same time.
+        </p>
+        <p>
+          A single average number hides the work operators actually do: following night
+          lows, morning ramps, daytime activity, evening peaks, and seasonal stress.
         </p>
       </ExplainerSection>
 
       <ExplainerSection
         id="solar"
-        kicker="Chapter 2"
+        kicker="Chapter 3"
         title="Solar Changes the Shape of the Problem"
         misconception="Solar is cheap, so adding more solar simply makes electricity cheaper."
         takeaway="Solar solves part of the day. The rest of the system has to solve the rest."
@@ -142,22 +171,54 @@ export default function Home() {
           can become saturated while the evening still needs storage, flexible demand,
           imports, or dispatchable plants.
         </p>
+        <p>
+          Surplus is not usually dumped into the ground. It may be curtailed, stored,
+          exported, shifted into demand, or converted into another useful form.
+        </p>
+      </ExplainerSection>
+
+      <ExplainerSection
+        id="weather"
+        kicker="Chapter 4"
+        title="Weather Changes Which Problem Matters"
+        misconception="Renewables are random, therefore useless."
+        takeaway="Weather-shaped generation needs flexibility-shaped support."
+        figure={<WeatherShapeInteractive />}
+        sources={chapterSources.weather}
+      >
+        <p>
+          Wind and solar are weather-shaped. They are not useless, and they are not
+          magic. Their value depends on what the rest of the system can do.
+        </p>
+        <p>
+          Different weather creates different grid problems: evening ramps, local
+          surplus, low-renewable periods, or the need to move energy across distance
+          and time.
+        </p>
       </ExplainerSection>
 
       <ExplainerSection
         id="congestion"
-        kicker="Chapter 3"
+        kicker="Chapter 5"
         title="Enough Energy, Wrong Place"
         misconception="If the country produces enough electricity, everyone can use it."
         takeaway="Enough energy nationally does not mean enough capacity locally."
         figure={<CongestionBatteryInteractive />}
         sources={chapterSources.congestion}
       >
+        <p>The national total can look fine while the local grid is full.</p>
         <p>
           Electricity has to move through specific lines, transformers, and substations.
           If one part of the network is full, extra generation in the wrong place may
           not help demand somewhere else.
         </p>
+        <details className="inline-note">
+          <summary>What kind of bottleneck?</summary>
+          <p>
+            It might be a transmission corridor between regions, a local distribution
+            cable, or a substation or transformer that cannot safely carry more power.
+          </p>
+        </details>
         <p>
           Batteries can shift energy, respond quickly, and reduce stress on the grid.
           But a battery placed near a bottleneck can relieve congestion in a way that a
@@ -167,7 +228,7 @@ export default function Home() {
 
       <ExplainerSection
         id="nuclear-finance"
-        kicker="Chapter 4"
+        kicker="Chapter 6"
         title="Why Nuclear Cost Changes So Much"
         misconception="Nuclear is expensive, full stop."
         takeaway="Nuclear cost is about time and risk, not just construction materials."
@@ -183,11 +244,15 @@ export default function Home() {
           delay risk. Once operating, a plant can provide firm low-carbon output for
           decades, but the path to operation matters enormously.
         </p>
+        <p>
+          The lesson is not that nuclear is always cheap or always too expensive. It is
+          that nuclear is capital-heavy before it is energy-producing.
+        </p>
       </ExplainerSection>
 
       <ExplainerSection
         id="plant-jobs"
-        kicker="Chapter 5"
+        kicker="Chapter 7"
         title="Power Sources Have Different Jobs"
         misconception="A power plant is a power plant."
         takeaway="Technologies are not interchangeable. They have different behaviors."
@@ -202,6 +267,30 @@ export default function Home() {
         <p>
           The point is not to crown one technology. It is to see what each shape helps
           with, and what it leaves for the rest of the system to solve.
+        </p>
+        <p>
+          Startup time and ramp rate are not the same thing. A plant may be slow to
+          start from cold, but once online still have some ability to adjust output.
+        </p>
+      </ExplainerSection>
+
+      <ExplainerSection
+        id="system-value"
+        kicker="Chapter 8"
+        title="Cheap MWh vs Useful MWh"
+        misconception="The cheapest generator wins."
+        takeaway="LCOE is useful, but incomplete. Electricity systems are portfolios, not single-generator contests."
+        figure={<SystemValueInteractive />}
+        sources={chapterSources.systemValue}
+      >
+        <p>
+          Plant cost matters. Construction, fuel, and maintenance are real costs, and
+          cheap energy can be extremely valuable.
+        </p>
+        <p>
+          But the cheapest generator is not always the cheapest reliable system. Timing,
+          location, flexibility, firm capacity, stability, curtailment, fuel risk, and
+          financing risk all change what a megawatt-hour is worth.
         </p>
       </ExplainerSection>
 

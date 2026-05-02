@@ -15,6 +15,7 @@ type ChapterMenuProps = {
 export function ChapterMenu({ items }: ChapterMenuProps) {
   const [activeId, setActiveId] = useState(items[0]?.id ?? "");
   const linkRefs = useRef(new Map<string, HTMLAnchorElement>());
+  const mobileLinkRefs = useRef(new Map<string, HTMLAnchorElement>());
   const mobileDetailsRef = useRef<HTMLDetailsElement>(null);
   const activeItem = items.find((item) => item.id === activeId) ?? items[0];
 
@@ -30,12 +31,22 @@ export function ChapterMenu({ items }: ChapterMenuProps) {
     let frame = 0;
 
     const updateActive = () => {
-      const anchorLine = window.innerHeight * 0.38;
+      const viewportTop = window.matchMedia("(max-width: 640px)").matches ? 72 : 64;
+      const viewportBottom = window.innerHeight;
       const current =
-        [...sections]
-          .reverse()
-          .find((section) => section.getBoundingClientRect().top <= anchorLine) ??
-        sections[0];
+        sections
+          .map((section) => {
+            const rect = section.getBoundingClientRect();
+            const visibleTop = Math.max(rect.top, viewportTop);
+            const visibleBottom = Math.min(rect.bottom, viewportBottom);
+            const visibleHeight = Math.max(0, visibleBottom - visibleTop);
+            const startsNearTop = rect.top <= viewportTop + 120 ? 140 : 0;
+            return {
+              id: section.id,
+              score: visibleHeight + startsNearTop - Math.max(0, rect.top - viewportTop) * 0.08
+            };
+          })
+          .sort((a, b) => b.score - a.score)[0] ?? { id: sections[0].id };
 
       setActiveId(current.id);
     };
@@ -48,22 +59,29 @@ export function ChapterMenu({ items }: ChapterMenuProps) {
     updateActive();
     window.addEventListener("scroll", onScroll, { passive: true });
     window.addEventListener("resize", onScroll);
+    window.addEventListener("hashchange", onScroll);
 
     return () => {
       window.cancelAnimationFrame(frame);
       window.removeEventListener("scroll", onScroll);
       window.removeEventListener("resize", onScroll);
+      window.removeEventListener("hashchange", onScroll);
     };
   }, [items]);
 
   useEffect(() => {
     const activeLink = linkRefs.current.get(activeId);
+    const activeMobileLink = mobileLinkRefs.current.get(activeId);
     const reducedMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
 
     activeLink?.scrollIntoView({
       behavior: reducedMotion ? "auto" : "smooth",
       block: "nearest",
       inline: "center"
+    });
+    activeMobileLink?.scrollIntoView({
+      behavior: reducedMotion ? "auto" : "smooth",
+      block: "nearest"
     });
   }, [activeId]);
 
@@ -89,7 +107,17 @@ export function ChapterMenu({ items }: ChapterMenuProps) {
         ))}
       </nav>
 
-      <details className="chapter-menu-mobile" ref={mobileDetailsRef}>
+      <details
+        className="chapter-menu-mobile"
+        ref={mobileDetailsRef}
+        onToggle={(event) => {
+          if (event.currentTarget.open) {
+            window.requestAnimationFrame(() => {
+              mobileLinkRefs.current.get(activeId)?.scrollIntoView({ block: "nearest" });
+            });
+          }
+        }}
+      >
         <summary aria-label={`Current section: ${activeItem?.mobileLabel ?? activeItem?.label}`}>
           <span>{activeItem?.mobileLabel ?? activeItem?.label}</span>
         </summary>
@@ -98,6 +126,13 @@ export function ChapterMenu({ items }: ChapterMenuProps) {
             <a
               href={`#${item.id}`}
               key={item.id}
+              ref={(node) => {
+                if (node) {
+                  mobileLinkRefs.current.set(item.id, node);
+                } else {
+                  mobileLinkRefs.current.delete(item.id);
+                }
+              }}
               aria-current={activeId === item.id ? "location" : undefined}
               data-active={activeId === item.id}
               onClick={() => {

@@ -36,5 +36,20 @@ export const myths = [
   {
     myth: "LCOE tells us what to build.",
     better: "LCOE misses timing, reliability, grid, and system-value effects."
+  },
+  {
+    myth: "Renewables are random.",
+    better:
+      "Wind and solar are weather-shaped. The challenge is matching them with flexibility, storage, transmission, and demand."
+  },
+  {
+    myth: "Baseload is all that matters.",
+    better:
+      "The grid needs firm capacity, flexibility, reserves, and stability - not just flat output."
+  },
+  {
+    myth: "Negative prices mean the grid is broken.",
+    better:
+      "Negative prices can signal temporary oversupply, congestion, inflexible generation, or lack of demand or storage at that moment."
   }
 ];
