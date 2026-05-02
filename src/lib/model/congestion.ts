@@ -1,4 +1,4 @@
-export type BatteryPlacement = "solar" | "city" | "bottleneck";
+export type BatteryPlacement = "none" | "solar" | "city" | "bottleneck";
 
 export type GridNode = {
   id: string;
@@ -49,6 +49,7 @@ const baseLines: GridLine[] = [
 
 export function congestionScenario(placement: BatteryPlacement): GridScenario {
   const reliefByPlacement: Record<BatteryPlacement, number> = {
+    none: 0,
     solar: 7,
     city: 4,
     bottleneck: 16
@@ -74,7 +75,7 @@ export function congestionScenario(placement: BatteryPlacement): GridScenario {
     nationalGeneration: 174,
     nationalDemand: 166,
     surplus: 8,
-    curtailment: placement === "bottleneck" ? 2 : placement === "solar" ? 4 : 7,
+    curtailment: placement === "bottleneck" ? 2 : placement === "solar" ? 4 : placement === "none" ? 8 : 7,
     congestionRelief: relief
   };
 }

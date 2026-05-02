@@ -1,35 +1,91 @@
 "use client";
 
 import { BatteryCharging, Map as MapIcon, Network } from "lucide-react";
+import type { CSSProperties } from "react";
 import { useMemo, useState } from "react";
-import {
-  congestionScenario,
-  lineStress,
-  type BatteryPlacement
-} from "@/lib/model/congestion";
-import { ToggleGroup } from "@/components/ui/ToggleGroup";
+import { congestionScenario, type BatteryPlacement } from "@/lib/model/congestion";
 
 type ViewMode = "national" | "grid";
 
-const placementLabels: Record<BatteryPlacement, string> = {
-  solar: "Near solar",
-  city: "Near city",
-  bottleneck: "At bottleneck"
+const placementFeedback: Record<BatteryPlacement, string> = {
+  none:
+    "The solar-heavy area produces more than the local grid can move. The constrained corridor overloads and some energy is curtailed.",
+  city:
+    "The battery helps local peak demand, but the upstream corridor from the solar-heavy area remains overloaded.",
+  solar:
+    "The battery absorbs surplus near the source, reducing curtailment and easing the export path.",
+  bottleneck:
+    "The battery is placed where the constraint occurs, so it relieves the overloaded corridor most directly."
 };
+
+const criticalCapacity = 34;
+const flowByPlacement: Record<BatteryPlacement, number> = {
+  none: 48,
+  city: 47,
+  solar: 41,
+  bottleneck: 34
+};
+
+const batteryPositions: Record<Exclude<BatteryPlacement, "none">, { x: number; y: number; label: string }> = {
+  solar: { x: 25, y: 83, label: "Near solar" },
+  bottleneck: { x: 50, y: 42, label: "At bottleneck" },
+  city: { x: 73, y: 56, label: "Near city" }
+};
+
+const labelOffsets: Record<string, { x: number; y: number; anchor?: "start" | "middle" | "end" }> = {
+  offshore: { x: 2, y: -7, anchor: "middle" },
+  solar: { x: 6, y: 8, anchor: "start" },
+  city: { x: 7, y: -7, anchor: "start" },
+  industry: { x: -6, y: -10, anchor: "end" },
+  gas: { x: 0, y: 12, anchor: "middle" },
+  nuclear: { x: 7, y: 1, anchor: "start" },
+  interconnector: { x: -4, y: -7, anchor: "middle" },
+  substation: { x: 7, y: 15, anchor: "start" }
+};
+
+const shortNodeLabels: Record<string, string> = {
+  offshore: "Offshore wind",
+  solar: "Solar-heavy rural area",
+  city: "City",
+  industry: "Industrial cluster",
+  gas: "Gas plant",
+  nuclear: "Nuclear plant",
+  interconnector: "Interconnector",
+  substation: "Constrained station"
+};
+
+function mapXValue(value: number) {
+  return 8 + value * 0.84;
+}
+
+function mapYValue(value: number) {
+  return 8 + value * 0.8;
+}
+
+function mapX(value: number) {
+  return `${mapXValue(value)}%`;
+}
+
+function mapY(value: number) {
+  return `${mapYValue(value)}%`;
+}
 
 export function CongestionBatteryInteractive() {
   const [view, setView] = useState<ViewMode>("grid");
-  const [placement, setPlacement] = useState<BatteryPlacement>("city");
+  const [placement, setPlacement] = useState<BatteryPlacement>("none");
   const scenario = useMemo(() => congestionScenario(placement), [placement]);
-
   const nodeById = new globalThis.Map(scenario.nodes.map((node) => [node.id, node]));
-  const batteryNode = nodeById.get(placement === "bottleneck" ? "substation" : placement);
-  const stateSummary =
-    placement === "bottleneck"
-      ? "Placed at the bottleneck, the battery relieves the actual constraint and the overloaded corridor calms down."
-      : placement === "solar"
-        ? "Placed near solar, the battery absorbs some surplus, but the downstream corridor can still be constrained."
-        : "Placed near the city, the battery helps local peak demand, but it does not fully clear the upstream bottleneck.";
+  const afterFlow = flowByPlacement[placement];
+  const batteryEffect = scenario.congestionRelief;
+  const remainingOverload = Math.max(0, afterFlow - criticalCapacity);
+  const stateSummary = placementFeedback[placement];
+  const status =
+    remainingOverload <= 0
+      ? "Bottleneck cleared"
+      : batteryEffect > 0
+        ? "Overload reduced, not solved"
+        : "Bottleneck still overloaded";
+  const corridorState = remainingOverload <= 0 ? "cleared" : batteryEffect > 0 ? "reduced" : "overloaded";
 
   return (
     <div className="interactive map-panel">
@@ -39,165 +95,184 @@ export function CongestionBatteryInteractive() {
           {view === "national" ? "National view" : "Grid view"}
         </span>
         <strong>
-          {view === "national" ? "+8 supply units" : `${scenario.congestionRelief} units relief`}
+          {view === "national" ? (
+            "Enough nationally"
+          ) : (
+            <>
+              {status}
+              <small>{batteryEffect} units relief</small>
+            </>
+          )}
         </strong>
       </div>
 
       <div className="map-grid">
         <figure className="grid-map" aria-labelledby="grid-summary">
           {view === "national" ? (
-            <div className="national-card" role="img" aria-describedby="grid-summary">
-              <div>
-                <span>Total generation</span>
-                <strong>{scenario.nationalGeneration}</strong>
+            <div className="national-reveal-card" aria-describedby="grid-summary">
+              <div className="national-totals">
+                <div>
+                  <span>Total generation</span>
+                  <strong>{scenario.nationalGeneration}</strong>
+                </div>
+                <div>
+                  <span>Total demand</span>
+                  <strong>{scenario.nationalDemand}</strong>
+                </div>
               </div>
-              <div>
-                <span>Total demand</span>
-                <strong>{scenario.nationalDemand}</strong>
-              </div>
-              <p>Enough electricity nationally.</p>
-              <p>But totals hide local wire limits.</p>
+              <p>Looks fine nationally.</p>
+              <p>But this view hides local wire limits.</p>
+              <button type="button" className="story-link-button" onClick={() => setView("grid")}>
+                Show grid view
+              </button>
             </div>
           ) : (
-            <svg className="detail-svg" viewBox="0 0 700 460" role="img" aria-describedby="grid-summary">
-              <defs>
-                <filter id="stressGlow">
-                  <feGaussianBlur stdDeviation="3" result="blur" />
-                  <feMerge>
-                    <feMergeNode in="blur" />
-                    <feMergeNode in="SourceGraphic" />
-                  </feMerge>
-                </filter>
-              </defs>
-              {scenario.lines.map((line) => {
-                const from = nodeById.get(line.from);
-                const to = nodeById.get(line.to);
+            <div className="network-story" aria-describedby="grid-summary">
+              <p className="map-instruction">Choose a battery location on the grid map.</p>
 
-                if (!from || !to) {
-                  return null;
-                }
-
-                const stress = lineStress(line);
-
-                return (
-                  <g key={line.id}>
-                    <line
-                      className="grid-line"
-                      data-stress={stress}
-                      x1={`${from.x}%`}
-                      y1={`${from.y}%`}
-                      x2={`${to.x}%`}
-                      y2={`${to.y}%`}
-                      filter={stress === "overloaded" ? "url(#stressGlow)" : undefined}
-                    />
-                    <line
-                      className="flow-pulse"
-                      data-stress={stress}
-                      x1={`${from.x}%`}
-                      y1={`${from.y}%`}
-                      x2={`${to.x}%`}
-                      y2={`${to.y}%`}
-                    />
-                    <text
-                      className="flow-label"
-                      data-stress={stress}
-                      x={`${(from.x + to.x) / 2}%`}
-                      y={`${(from.y + to.y) / 2}%`}
-                    >
-                      {stress === "overloaded" ? "over limit" : stress === "near" ? "near limit" : "within limit"}
-                    </text>
-                    <text
-                      className="flow-unit-label"
-                      x={`${(from.x + to.x) / 2}%`}
-                      y={`${(from.y + to.y) / 2 + 4}%`}
-                    >
-                      {Math.round(line.flow)} flow / {line.capacity} capacity
-                    </text>
-                  </g>
-                );
-              })}
-
-              {scenario.nodes.map((node) => (
-                <g key={node.id} className="node" data-kind={node.kind}>
-                  <circle cx={`${node.x}%`} cy={`${node.y}%`} r="10" />
-                  <text
-                    x={`${node.x}%`}
-                    y={`${node.y + (node.id === "city" || node.id === "substation" ? -5 : 5)}%`}
-                  >
-                    {node.label}
-                  </text>
-                </g>
-              ))}
-
-              <g className="battery-node">
-                <circle
-                  cx={`${batteryNode?.x}%`}
-                  cy={`${batteryNode?.y}%`}
-                  r="18"
-                />
-                <circle
-                  className="battery-charge"
-                  cx={`${batteryNode?.x}%`}
-                  cy={`${batteryNode?.y}%`}
-                  r="25"
-                />
-                <text
-                  x={`${batteryNode?.x}%`}
-                  y={`${(batteryNode?.y ?? 0) - 5}%`}
+              <div className="network-map">
+                <svg
+                  className="network-svg"
+                  viewBox="0 0 100 100"
+                  preserveAspectRatio="none"
+                  aria-hidden="true"
+                  focusable="false"
                 >
-                  battery
-                </text>
-              </g>
-            </svg>
+                  <defs>
+                    <filter id="networkStressGlow">
+                      <feGaussianBlur stdDeviation="3" result="blur" />
+                      <feMerge>
+                        <feMergeNode in="blur" />
+                        <feMergeNode in="SourceGraphic" />
+                      </feMerge>
+                    </filter>
+                  </defs>
+
+                  {scenario.lines.map((line) => {
+                    const from = nodeById.get(line.from);
+                    const to = nodeById.get(line.to);
+                    const isCritical = line.id === "solar-substation";
+
+                    if (!from || !to) {
+                      return null;
+                    }
+
+                    return (
+                      <line
+                        key={line.id}
+                        className="network-line"
+                        data-critical={isCritical}
+                        data-state={isCritical ? corridorState : "background"}
+                        x1={mapXValue(from.x)}
+                        y1={mapYValue(from.y)}
+                        x2={mapXValue(to.x)}
+                        y2={mapYValue(to.y)}
+                        filter={isCritical && remainingOverload > 0 ? "url(#networkStressGlow)" : undefined}
+                      />
+                    );
+                  })}
+
+                  {scenario.nodes.map((node) => {
+                    const offset = labelOffsets[node.id] ?? { x: 0, y: 10, anchor: "middle" };
+                    const isFocusNode = ["solar", "substation", "city", "industry"].includes(node.id);
+
+                    return (
+                      <g key={node.id} className="network-node" data-kind={node.kind} data-focus={isFocusNode}>
+                        <circle cx={mapXValue(node.x)} cy={mapYValue(node.y)} r={isFocusNode ? 1.45 : 1} />
+                        <text
+                          className={isFocusNode ? "network-focus-label" : "network-context-label"}
+                          x={mapXValue(node.x + offset.x)}
+                          y={mapYValue(node.y + offset.y)}
+                          textAnchor={offset.anchor ?? "middle"}
+                        >
+                          {shortNodeLabels[node.id]}
+                        </text>
+                      </g>
+                    );
+                  })}
+
+                  <text className="network-bottleneck-label" x={mapXValue(34)} y={mapYValue(58)}>
+                    {status}
+                  </text>
+                </svg>
+
+                {(Object.entries(batteryPositions) as Array<[Exclude<BatteryPlacement, "none">, { x: number; y: number; label: string }]>).map(([option, position]) => (
+                  <button
+                    key={option}
+                    type="button"
+                    className="network-battery-button"
+                    style={{ "--x": mapX(position.x), "--y": mapY(position.y) } as CSSProperties}
+                    data-active={placement === option}
+                    aria-pressed={placement === option}
+                    onClick={() => setPlacement(option)}
+                  >
+                    <BatteryCharging aria-hidden="true" size={16} />
+                    <span>{position.label}</span>
+                  </button>
+                ))}
+              </div>
+
+              <div className="map-mode-row" aria-label="View mode and baseline">
+                <button type="button" onClick={() => setView("national")}>
+                  National totals
+                </button>
+                <button
+                  type="button"
+                  data-active={placement === "none"}
+                  aria-pressed={placement === "none"}
+                  onClick={() => setPlacement("none")}
+                >
+                  No battery
+                </button>
+              </div>
+            </div>
           )}
           <figcaption id="grid-summary">
             {view === "national"
               ? "The national total shows more generation than demand, but it does not show whether lines and substations can deliver it."
-              : `${stateSummary} Curtailment is ${scenario.curtailment} illustrative units.`}
+              : `${status}. ${stateSummary}`}
           </figcaption>
         </figure>
+
+        {view === "grid" && (
+          <div className="metric-strip" aria-label="Current bottleneck metrics">
+            <div className="metric-wide">
+              <span>Critical corridor</span>
+              <strong>Solar-heavy rural area → Constrained station</strong>
+            </div>
+            <div>
+              <span>Flow</span>
+              <strong>{afterFlow} units</strong>
+            </div>
+            <div>
+              <span>Capacity</span>
+              <strong>{criticalCapacity} units</strong>
+            </div>
+            <div>
+              <span>Battery relief</span>
+              <strong>{batteryEffect} units</strong>
+            </div>
+            <div data-cleared={remainingOverload === 0}>
+              <span>Remaining overload</span>
+              <strong>{remainingOverload} units</strong>
+            </div>
+            <div>
+              <span>Curtailment</span>
+              <strong>{scenario.curtailment} illustrative units</strong>
+            </div>
+          </div>
+        )}
 
         <div className="map-copy">
           <p className="visual-moment">
             <span>Enough electricity nationally.</span>
             <span>Not enough grid capacity locally.</span>
           </p>
-          <p>
-            The red corridor is the actual constraint. A battery can shift energy anywhere, but it
-            reduces congestion most when it is placed where the constraint is binding.
+          <p className="state-note">
+            {view === "national"
+              ? "The same national totals can hide a local bottleneck between where electricity is produced and where it is needed."
+              : stateSummary}
           </p>
-          <p className="state-note">{stateSummary}</p>
-        </div>
-      </div>
-
-      <div className="control-grid">
-        <ToggleGroup<ViewMode>
-          label="View"
-          value={view}
-          options={[
-            { value: "national", label: "National" },
-            { value: "grid", label: "Grid" }
-          ]}
-          onChange={setView}
-        />
-
-        <div className="control">
-          <span className="control-label">Battery placement</span>
-          <div className="placement-grid" role="group" aria-label="Battery placement">
-            {(Object.keys(placementLabels) as BatteryPlacement[]).map((option) => (
-              <button
-                key={option}
-                className="placement-button"
-                data-active={option === placement}
-                type="button"
-                aria-pressed={option === placement}
-                onClick={() => setPlacement(option)}
-              >
-                <BatteryCharging aria-hidden="true" size={16} />
-                {placementLabels[option]}
-              </button>
-            ))}
-          </div>
         </div>
       </div>
     </div>
