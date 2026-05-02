@@ -59,7 +59,7 @@ export function CongestionBatteryInteractive() {
               <p>But totals hide local wire limits.</p>
             </div>
           ) : (
-            <svg viewBox="0 0 700 460" role="img" aria-describedby="grid-summary">
+            <svg className="detail-svg" viewBox="0 0 700 460" role="img" aria-describedby="grid-summary">
               <defs>
                 <filter id="stressGlow">
                   <feGaussianBlur stdDeviation="3" result="blur" />

@@ -79,7 +79,7 @@ export function SolarDuckInteractive() {
       </div>
 
       <figure aria-labelledby="solar-summary">
-        <svg className="duck-chart" viewBox={`0 0 ${width} ${height}`} role="img">
+        <svg className="duck-chart detail-svg" viewBox={`0 0 ${width} ${height}`} role="img">
           <defs>
             <pattern id="curtailmentHatch" patternUnits="userSpaceOnUse" width="8" height="8">
               <path d="M-1 9 L9 -1" stroke="#c16938" strokeWidth="1.4" opacity="0.7" />

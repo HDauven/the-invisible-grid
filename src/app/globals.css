@@ -355,7 +355,9 @@ p {
 
 .gauge-wrap,
 .chart-panel figure,
-.grid-map {
+.grid-map,
+.nuclear-panel figure,
+.plant-panel figure {
   margin: 0;
 }
 
@@ -1401,6 +1403,10 @@ footer {
 }
 
 @media (max-width: 640px) {
+  body {
+    background: var(--paper);
+  }
+
   h1 {
     font-size: clamp(3.5rem, 18vw, 5.3rem);
   }
@@ -1411,6 +1417,7 @@ footer {
 
   .hero,
   .chapter,
+  .shapes-section,
   .myths-section,
   .glossary-section,
   .methodology {
@@ -1418,10 +1425,90 @@ footer {
     padding-right: 1rem;
   }
 
+  .hero {
+    gap: 1rem;
+    padding-top: 4.7rem;
+  }
+
+  .hero-copy > p:not(.eyebrow):not(.hero-lede) {
+    font-size: 0.98rem;
+  }
+
+  .hero-visual {
+    border-top: 1px solid var(--line);
+    min-height: 270px;
+    padding-top: 0.5rem;
+  }
+
+  .hero-visual text {
+    font-size: 15px;
+  }
+
+  .thesis-band {
+    padding: 2rem 1rem;
+  }
+
+  .thesis-band p {
+    font-size: clamp(1.55rem, 8vw, 2.25rem);
+  }
+
+  .chapter {
+    gap: 1.35rem;
+    padding-bottom: 3.2rem;
+    padding-top: 3.2rem;
+  }
+
+  .misconception {
+    margin: 1.2rem 0;
+  }
+
+  .prose {
+    font-size: 0.97rem;
+  }
+
+  .takeaway {
+    font-size: 0.94rem;
+  }
+
   .interactive {
     margin-left: -0.25rem;
     margin-right: -0.25rem;
     padding: 0.85rem;
+  }
+
+  figcaption {
+    font-size: 0.86rem;
+  }
+
+  .chart-panel figure,
+  .grid-map,
+  .nuclear-panel figure,
+  .plant-panel figure {
+    overflow-x: auto;
+    overscroll-behavior-x: contain;
+    padding-bottom: 0.2rem;
+  }
+
+  .detail-svg {
+    min-width: 0;
+  }
+
+  .duck-chart.detail-svg,
+  .finance-chart.detail-svg {
+    min-width: 620px;
+  }
+
+  .gauge-wrap svg {
+    min-width: 0;
+  }
+
+  .gauge-zone.center {
+    font-size: 26px;
+  }
+
+  .gauge-zone.left,
+  .gauge-zone.right {
+    font-size: 11px;
   }
 
   .panel-heading {
@@ -1470,6 +1557,7 @@ footer {
 
   .method-card {
     grid-template-columns: 1fr;
+    padding: 1.15rem;
   }
 
   .chapter-menu {
@@ -1481,6 +1569,85 @@ footer {
     right: 0;
     top: 0;
     transform: none;
+    width: 100%;
+  }
+
+  .chapter-menu a {
+    font-size: 0.74rem;
+    padding: 0.48rem 0.62rem;
+  }
+
+  .shape-card {
+    min-height: 0;
+    padding: 0.85rem;
+  }
+
+  .shape-card h3 {
+    font-size: 1.16rem;
+    margin-top: 0.65rem;
+  }
+
+  .shape-card p {
+    font-size: 0.86rem;
+  }
+
+  .plant-card-grid {
+    display: flex;
+    margin-left: -0.15rem;
+    margin-right: -0.15rem;
+    overflow-x: auto;
+    padding-bottom: 0.35rem;
+    scroll-snap-type: x proximity;
+  }
+
+  .plant-card {
+    flex: 0 0 178px;
+    min-height: 132px;
+    scroll-snap-align: start;
+  }
+
+  .plant-card small {
+    font-size: 0.74rem;
+  }
+
+  .trait-panel {
+    gap: 0.8rem;
+  }
+
+  .trait-row {
+    gap: 0.35rem;
+  }
+
+  .kwh-panel {
+    padding: 0.8rem;
+  }
+
+  .kwh-intro strong {
+    font-size: 2.1rem;
+  }
+
+  .national-card {
+    min-width: 0;
+  }
+
+  .map-copy {
+    gap: 0.8rem;
+  }
+
+  .myth-card {
+    padding: 0.85rem;
+  }
+
+  .myth-card summary {
+    font-size: 1.05rem;
+  }
+
+  .glossary-list div {
+    padding: 0.85rem 0;
+  }
+
+  .source-list a {
+    overflow-wrap: anywhere;
   }
 }
 

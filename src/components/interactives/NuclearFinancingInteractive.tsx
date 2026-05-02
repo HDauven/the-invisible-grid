@@ -65,7 +65,7 @@ export function NuclearFinancingInteractive() {
       </div>
 
       <figure aria-labelledby="nuclear-summary">
-        <svg className="finance-chart" viewBox={`0 0 ${width} ${height}`} role="img">
+        <svg className="finance-chart detail-svg" viewBox={`0 0 ${width} ${height}`} role="img">
           <text className="direct-label chart-callout" x="48" y="32">
             Money accumulates before first electricity is sold
           </text>

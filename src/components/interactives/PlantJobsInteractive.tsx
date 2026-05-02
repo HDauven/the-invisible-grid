@@ -72,7 +72,7 @@ export function PlantJobsInteractive() {
       </div>
 
       <figure aria-labelledby="plant-summary">
-        <svg className="plant-chart" viewBox={`0 0 ${width} ${height}`} role="img">
+        <svg className="plant-chart detail-svg" viewBox={`0 0 ${width} ${height}`} role="img">
           {[0, 6, 12, 18, 24].map((tick) => (
             <text key={tick} className="axis-label" x={x(tick)} y={height - 10} textAnchor="middle">
               {tick === 24 ? "24h" : `${tick}:00`}
