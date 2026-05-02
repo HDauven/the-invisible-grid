@@ -115,22 +115,22 @@ export function NuclearFinancingInteractive() {
 
       <div className="kwh-panel" aria-label="Illustrative capital recovery pressure">
         <div className="kwh-intro">
-          <span>Impact on cost per kWh</span>
+          <span>Illustrative capital recovery index</span>
           <strong>{centsPerKWh(result.capitalCostPerMWh)}</strong>
           <p>
-            Same illustrative 1.2 GW reactor, {formatOne(lifetimeTWh)} TWh lifetime
-            output. Higher financing and delays mean more revenue is needed per unit
-            sold to recover capital.
+            Simplified EUR/kWh-style index for the same illustrative 1.2 GW reactor,
+            {formatOne(lifetimeTWh)} TWh lifetime output. This is not a project cost
+            estimate.
           </p>
         </div>
         <div className="kwh-bars">
           <div>
-            <span>Reference: 6 years, 2%, no delay</span>
+            <span>Illustrative reference: 6 years, 2%, no delay</span>
             <strong>{eurPerMWh(reference.capitalCostPerMWh)}</strong>
             <i style={{ width: `${referenceMWhWidth}%` }} />
           </div>
           <div>
-            <span>Current slider setting</span>
+            <span>Illustrative current slider setting</span>
             <strong>{eurPerMWh(result.capitalCostPerMWh)}</strong>
             <i style={{ width: `${currentMWhWidth}%` }} />
           </div>

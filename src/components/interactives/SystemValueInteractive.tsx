@@ -38,6 +38,8 @@ function CostBar({ label, value }: { label: string; value: number }) {
 export function SystemValueInteractive() {
   const [selectedId, setSelectedId] = useState<SystemValueId>("solar");
   const selected = systemValueProfiles.find((profile) => profile.id === selectedId) ?? systemValueProfiles[0];
+  const highFriction = effectLabels.filter(([key]) => selected.systemEffects[key] >= 4).length;
+  const lowFriction = effectLabels.filter(([key]) => selected.systemEffects[key] <= 1).length;
 
   return (
     <div className="interactive system-value-panel">
@@ -50,15 +52,24 @@ export function SystemValueInteractive() {
       </div>
 
       <div className="system-value-grid" aria-labelledby="system-value-summary">
-        <section>
+        <section className="mwh-side cheap-side">
+          <span className="side-label">Cheap MWh</span>
           <h3>Plant cost</h3>
           <CostBar label="construction" value={selected.plantCost.construction} />
           <CostBar label="fuel" value={selected.plantCost.fuel} />
           <CostBar label="maintenance" value={selected.plantCost.maintenance} />
         </section>
 
-        <section>
-          <h3>System value / system cost</h3>
+        <div className="value-arrow" aria-hidden="true">
+          vs
+        </div>
+
+        <section className="mwh-side useful-side">
+          <span className="side-label">Useful MWh</span>
+          <h3>System fit</h3>
+          <p>
+            {lowFriction} strengths, {highFriction} support needs
+          </p>
           <div className="system-effect-grid">
             {effectLabels.map(([key, label]) => (
               <span data-level={selected.systemEffects[key]} key={key}>
@@ -67,6 +78,10 @@ export function SystemValueInteractive() {
             ))}
           </div>
         </section>
+      </div>
+
+      <div className="reveal-strip">
+        The cheapest generator is not always the cheapest reliable system.
       </div>
 
       <p className="state-note" id="system-value-summary">

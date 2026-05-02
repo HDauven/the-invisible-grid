@@ -57,17 +57,46 @@ export function ChapterMenu({ items }: ChapterMenuProps) {
     };
 
     updateActive();
+    const restoreFrame = window.setTimeout(updateActive, 120);
     window.addEventListener("scroll", onScroll, { passive: true });
     window.addEventListener("resize", onScroll);
     window.addEventListener("hashchange", onScroll);
 
     return () => {
       window.cancelAnimationFrame(frame);
+      window.clearTimeout(restoreFrame);
       window.removeEventListener("scroll", onScroll);
       window.removeEventListener("resize", onScroll);
       window.removeEventListener("hashchange", onScroll);
     };
   }, [items]);
+
+  useEffect(() => {
+    const closeMobileMenu = () => {
+      if (mobileDetailsRef.current?.open) {
+        mobileDetailsRef.current.open = false;
+      }
+    };
+
+    const onPointerDown = (event: PointerEvent) => {
+      const target = event.target;
+      if (
+        mobileDetailsRef.current?.open &&
+        target instanceof Node &&
+        !mobileDetailsRef.current.contains(target)
+      ) {
+        closeMobileMenu();
+      }
+    };
+
+    window.addEventListener("scroll", closeMobileMenu, { passive: true });
+    document.addEventListener("pointerdown", onPointerDown);
+
+    return () => {
+      window.removeEventListener("scroll", closeMobileMenu);
+      document.removeEventListener("pointerdown", onPointerDown);
+    };
+  }, []);
 
   useEffect(() => {
     const activeLink = linkRefs.current.get(activeId);

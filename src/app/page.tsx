@@ -138,7 +138,7 @@ export default function Home() {
         kicker="Chapter 2"
         title="A Day Has a Shape"
         misconception="Electricity demand is basically constant."
-        takeaway="The grid does not serve an average day. It serves every moment of the day."
+        takeaway="Average demand hides the actual job of the grid: following the shape of the day."
         figure={<DailyDemandInteractive />}
         sources={chapterSources.demand}
       >
@@ -202,7 +202,7 @@ export default function Home() {
         kicker="Chapter 5"
         title="Enough Energy, Wrong Place"
         misconception="If the country produces enough electricity, everyone can use it."
-        takeaway="Enough energy nationally does not mean enough capacity locally."
+        takeaway="The national total can look fine while the local grid is full."
         figure={<CongestionBatteryInteractive />}
         sources={chapterSources.congestion}
       >
@@ -279,7 +279,7 @@ export default function Home() {
         kicker="Chapter 8"
         title="Cheap MWh vs Useful MWh"
         misconception="The cheapest generator wins."
-        takeaway="LCOE is useful, but incomplete. Electricity systems are portfolios, not single-generator contests."
+        takeaway="The cheapest generator is not always the cheapest reliable system."
         figure={<SystemValueInteractive />}
         sources={chapterSources.systemValue}
       >
@@ -291,6 +291,10 @@ export default function Home() {
           But the cheapest generator is not always the cheapest reliable system. Timing,
           location, flexibility, firm capacity, stability, curtailment, fuel risk, and
           financing risk all change what a megawatt-hour is worth.
+        </p>
+        <p>
+          A unit of electricity has different value depending on when and where it
+          appears.
         </p>
       </ExplainerSection>
 

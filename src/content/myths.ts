@@ -45,11 +45,11 @@ export const myths = [
   {
     myth: "Baseload is all that matters.",
     better:
-      "The grid needs firm capacity, flexibility, reserves, and stability - not just flat output."
+      "The grid needs firm capacity, flexibility, reserves, and stability — not just flat output."
   },
   {
     myth: "Negative prices mean the grid is broken.",
     better:
-      "Negative prices can signal temporary oversupply, congestion, inflexible generation, or lack of demand or storage at that moment."
+      "Negative prices can signal temporary oversupply, congestion, inflexible generation, or too little demand/storage at that moment."
   }
 ];
