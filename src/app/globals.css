@@ -59,6 +59,7 @@ main {
 
 .hero-copy {
   max-width: 680px;
+  animation: copy-rise 700ms ease both;
 }
 
 .eyebrow,
@@ -118,6 +119,15 @@ p {
   margin-top: 1.3rem;
   padding: 0.9rem 1.15rem;
   text-decoration: none;
+  transition:
+    background 180ms ease,
+    transform 180ms ease;
+}
+
+.hero-link:hover,
+.hero-link:focus-visible {
+  background: #2b3a35;
+  transform: translateY(-2px);
 }
 
 .hero-visual {
@@ -142,18 +152,27 @@ p {
   stroke: var(--demand);
   stroke-linecap: round;
   stroke-width: 8;
+  stroke-dasharray: 720;
+  stroke-dashoffset: 720;
+  animation: draw-line 1200ms 260ms ease forwards;
 }
 
 .hero-solar {
   stroke: var(--solar);
   stroke-linecap: round;
   stroke-width: 6;
+  stroke-dasharray: 720;
+  stroke-dashoffset: 720;
+  animation: draw-line 1200ms 520ms ease forwards;
 }
 
 .hero-wire {
   stroke: var(--net);
   stroke-linecap: round;
   stroke-width: 4;
+  stroke-dasharray: 700;
+  stroke-dashoffset: 700;
+  animation: draw-line 1050ms 740ms ease forwards;
 }
 
 .hero-visual circle {
@@ -203,6 +222,16 @@ p {
   gap: clamp(2rem, 5vw, 5rem);
   grid-template-columns: minmax(280px, 0.75fr) minmax(440px, 1.25fr);
   padding: clamp(3.5rem, 8vw, 7rem) clamp(1.25rem, 6vw, 5.5rem);
+}
+
+.chapter,
+.myths-section,
+.glossary-section,
+.methodology,
+.shapes-section {
+  animation: section-reveal linear both;
+  animation-range: entry 8% cover 24%;
+  animation-timeline: view();
 }
 
 .chapter-copy {
@@ -256,6 +285,9 @@ p {
   border-radius: 8px;
   box-shadow: var(--shadow);
   padding: clamp(1rem, 2vw, 1.35rem);
+  transition:
+    box-shadow 220ms ease,
+    transform 220ms ease;
 }
 
 .panel-heading {
@@ -345,7 +377,31 @@ p {
   stroke: var(--ink);
   stroke-linecap: round;
   stroke-width: 7;
-  transition: transform 120ms linear;
+  transition: transform 220ms cubic-bezier(0.2, 0.75, 0.2, 1);
+}
+
+.frequency-panel[data-inertia="low"] .needle {
+  transition-duration: 90ms;
+}
+
+.frequency-panel[data-warning="true"] {
+  box-shadow:
+    0 0 0 1px rgba(194, 71, 53, 0.18),
+    0 26px 70px rgba(194, 71, 53, 0.18);
+}
+
+.warning-ring {
+  fill: none;
+  opacity: 0.7;
+  stroke: var(--stress);
+  stroke-width: 2;
+  transform-origin: 260px 236px;
+  animation: warning-pulse 1200ms ease-in-out infinite;
+}
+
+.inertia-label {
+  fill: var(--muted);
+  text-anchor: middle;
 }
 
 .needle-hub {
@@ -419,6 +475,17 @@ input[type="range"] {
   font-weight: 720;
   min-height: 42px;
   padding: 0.62rem 0.78rem;
+  transition:
+    background 180ms ease,
+    color 180ms ease,
+    transform 180ms ease,
+    border-color 180ms ease;
+}
+
+.toggle-button:hover,
+.response-button:hover,
+.placement-button:hover {
+  transform: translateY(-1px);
 }
 
 .toggle-button[data-active="true"],
@@ -456,6 +523,16 @@ input[type="range"] {
   vector-effect: non-scaling-stroke;
 }
 
+.morph-line,
+.curtailment-area,
+.ramp-marker,
+.annotation {
+  transition:
+    d 420ms ease,
+    opacity 240ms ease,
+    transform 240ms ease;
+}
+
 .demand-line {
   stroke: var(--demand);
 }
@@ -472,6 +549,7 @@ input[type="range"] {
 .curtailment-area {
   fill: url("#curtailmentHatch");
   opacity: 0.8;
+  animation: fade-in 260ms ease both;
 }
 
 .ramp-marker {
@@ -492,6 +570,10 @@ input[type="range"] {
 
 .annotation.strong {
   fill: var(--stress);
+}
+
+.state-annotation {
+  animation: annotation-enter 260ms ease both;
 }
 
 .direct-label.demand {
@@ -555,6 +637,10 @@ input[type="range"] {
   stroke-linecap: round;
   stroke-width: 8;
   vector-effect: non-scaling-stroke;
+  transition:
+    stroke 340ms ease,
+    stroke-width 340ms ease,
+    opacity 340ms ease;
 }
 
 .grid-line[data-stress="near"] {
@@ -573,6 +659,22 @@ input[type="range"] {
   stroke: var(--surface);
   stroke-width: 5;
   text-anchor: middle;
+}
+
+.flow-pulse {
+  opacity: 0.58;
+  stroke: rgba(255, 253, 248, 0.88);
+  stroke-dasharray: 8 18;
+  stroke-linecap: round;
+  stroke-width: 3;
+  vector-effect: non-scaling-stroke;
+  animation: flow-move 1100ms linear infinite;
+}
+
+.flow-pulse[data-stress="overloaded"] {
+  opacity: 0.88;
+  stroke: rgba(255, 240, 222, 0.96);
+  animation-duration: 720ms;
 }
 
 .node circle {
@@ -603,12 +705,94 @@ input[type="range"] {
   fill: rgba(77, 139, 92, 0.22);
   stroke: var(--battery);
   stroke-width: 4;
+  transition:
+    cx 380ms ease,
+    cy 380ms ease;
+}
+
+.battery-node .battery-charge {
+  fill: none;
+  opacity: 0.58;
+  stroke-dasharray: 8 8;
+  stroke-width: 2;
+  animation: charge-ring 1300ms linear infinite;
 }
 
 .map-copy {
   border-left: 1px solid var(--line);
   color: var(--muted);
   padding-left: 1rem;
+}
+
+.state-note {
+  background: rgba(47, 111, 143, 0.08);
+  border-left: 3px solid var(--net);
+  color: var(--ink);
+  font-weight: 680;
+  padding: 0.75rem 0.85rem;
+}
+
+.shapes-section {
+  align-items: start;
+  border-bottom: 1px solid var(--line);
+  display: grid;
+  gap: clamp(1.5rem, 4vw, 3rem);
+  grid-template-columns: minmax(260px, 0.52fr) minmax(0, 1fr);
+  padding: clamp(3rem, 7vw, 5.5rem) clamp(1.25rem, 6vw, 5.5rem);
+}
+
+.shapes-section h2 {
+  max-width: 9ch;
+}
+
+.shape-grid {
+  display: grid;
+  gap: 0.75rem;
+  grid-template-columns: repeat(5, minmax(0, 1fr));
+}
+
+.shape-card {
+  background: rgba(255, 253, 248, 0.82);
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  min-height: 190px;
+  padding: 0.95rem;
+  transition:
+    border-color 220ms ease,
+    transform 220ms ease;
+}
+
+.shape-card:hover {
+  border-color: rgba(47, 111, 143, 0.36);
+  transform: translateY(-3px);
+}
+
+.shape-card span {
+  align-items: center;
+  background: var(--ink);
+  border-radius: 999px;
+  color: var(--surface);
+  display: inline-flex;
+  font-size: 0.8rem;
+  font-weight: 780;
+  height: 28px;
+  justify-content: center;
+  width: 28px;
+}
+
+.shape-card h3 {
+  font-family: Georgia, "Times New Roman", serif;
+  font-size: 1.35rem;
+  font-weight: 500;
+  line-height: 1.1;
+  margin: 0.85rem 0 0.55rem;
+}
+
+.shape-card p {
+  color: var(--muted);
+  font-size: 0.92rem;
+  line-height: 1.45;
+  margin: 0;
 }
 
 .visual-moment {
@@ -652,18 +836,259 @@ input[type="range"] {
   border-radius: 8px;
   min-height: 172px;
   padding: 1rem;
+  transition:
+    border-color 180ms ease,
+    box-shadow 180ms ease,
+    transform 180ms ease;
 }
 
-.myth-card p {
+.myth-card:hover,
+.myth-card:focus-within {
+  border-color: rgba(47, 111, 143, 0.35);
+  box-shadow: 0 12px 28px rgba(33, 37, 34, 0.08);
+  transform: translateY(-2px);
+}
+
+.myth-card summary {
+  cursor: pointer;
   font-family: Georgia, "Times New Roman", serif;
   font-size: 1.2rem;
   line-height: 1.25;
   margin: 0 0 1rem;
 }
 
-.myth-card span {
+.myth-card summary::marker {
+  color: var(--net);
+}
+
+.myth-card p {
   color: var(--muted);
   line-height: 1.45;
+  margin: 0;
+}
+
+.finance-chart,
+.plant-chart {
+  display: block;
+  height: auto;
+  width: 100%;
+}
+
+.axis-line {
+  stroke: var(--line);
+  stroke-width: 2;
+}
+
+.finance-line {
+  fill: none;
+  stroke: var(--nuclear);
+  stroke-linecap: round;
+  stroke-linejoin: round;
+  stroke-width: 5;
+  stroke-dasharray: 900;
+  stroke-dashoffset: 900;
+  animation: draw-line 850ms ease forwards;
+}
+
+.finance-point circle {
+  fill: var(--surface);
+  stroke: var(--nuclear);
+  stroke-width: 3;
+}
+
+.finance-point[data-delay="true"] circle {
+  fill: rgba(194, 71, 53, 0.15);
+  stroke: var(--stress);
+}
+
+.finance-point text {
+  fill: var(--muted);
+  font-size: 12px;
+}
+
+.finance-bars {
+  display: grid;
+  gap: 0.75rem;
+  margin-top: 1rem;
+}
+
+.finance-bars div {
+  display: grid;
+  gap: 0.35rem;
+  grid-template-columns: minmax(0, 1fr) auto;
+}
+
+.finance-bars span {
+  color: var(--muted);
+  font-weight: 720;
+}
+
+.finance-bars strong {
+  font-variant-numeric: tabular-nums;
+}
+
+.finance-bars i {
+  background: linear-gradient(90deg, var(--nuclear), #9a86b8);
+  border-radius: 999px;
+  display: block;
+  grid-column: 1 / -1;
+  height: 10px;
+  transition: width 320ms ease;
+}
+
+.provided-list {
+  background: rgba(97, 91, 155, 0.08);
+  border: 1px solid rgba(97, 91, 155, 0.18);
+  border-radius: 8px;
+  margin-top: 1rem;
+  padding: 0.9rem;
+}
+
+.provided-list > span,
+.trait-heading {
+  align-items: center;
+  color: var(--ink);
+  display: inline-flex;
+  font-weight: 780;
+  gap: 0.45rem;
+}
+
+.provided-list ul {
+  columns: 2;
+  color: var(--muted);
+  margin: 0.65rem 0 0;
+  padding-left: 1.1rem;
+}
+
+.provided-list li {
+  margin-bottom: 0.35rem;
+}
+
+.plant-layout {
+  display: grid;
+  gap: 1rem;
+  grid-template-columns: minmax(220px, 0.42fr) minmax(0, 1fr);
+}
+
+.plant-card-grid {
+  display: grid;
+  gap: 0.45rem;
+}
+
+.plant-card {
+  background: rgba(242, 238, 229, 0.72);
+  border: 1px solid rgba(23, 32, 29, 0.12);
+  border-radius: 8px;
+  color: var(--ink);
+  cursor: pointer;
+  padding: 0.65rem;
+  text-align: left;
+  transition:
+    background 180ms ease,
+    border-color 180ms ease,
+    transform 180ms ease;
+}
+
+.plant-card:hover,
+.plant-card:focus-visible {
+  transform: translateX(2px);
+}
+
+.plant-card[data-active="true"] {
+  background: var(--ink);
+  border-color: var(--ink);
+  color: var(--surface);
+}
+
+.plant-card span {
+  display: block;
+  font-weight: 820;
+  margin-bottom: 0.2rem;
+}
+
+.plant-card small {
+  color: inherit;
+  display: block;
+  font-size: 0.78rem;
+  line-height: 1.35;
+  opacity: 0.72;
+}
+
+.thin {
+  opacity: 0.45;
+  stroke-width: 3;
+}
+
+.plant-help-area {
+  fill: rgba(97, 91, 155, 0.22);
+  transition:
+    d 320ms ease,
+    fill 220ms ease;
+}
+
+.plant-help-area[data-kind="solar"] {
+  fill: rgba(216, 155, 33, 0.28);
+}
+
+.plant-help-area[data-kind="wind"] {
+  fill: rgba(40, 127, 128, 0.24);
+}
+
+.plant-help-area[data-kind="storage"],
+.plant-help-area[data-kind="demand"] {
+  fill: rgba(77, 139, 92, 0.24);
+}
+
+.plant-help-area[data-kind="peak"],
+.plant-help-area[data-kind="ramp"] {
+  fill: rgba(194, 122, 34, 0.24);
+}
+
+.plant-help-line {
+  fill: none;
+  stroke: var(--nuclear);
+  stroke-linecap: round;
+  stroke-linejoin: round;
+  stroke-width: 4;
+  transition: d 320ms ease;
+}
+
+.trait-panel {
+  border-top: 1px solid var(--line);
+  display: grid;
+  gap: 0.65rem;
+  margin-top: 1rem;
+  padding-top: 1rem;
+}
+
+.trait-row {
+  align-items: center;
+  display: grid;
+  gap: 0.75rem;
+  grid-template-columns: minmax(150px, 0.42fr) minmax(0, 1fr);
+}
+
+.trait-row span {
+  color: var(--muted);
+  font-size: 0.88rem;
+  font-weight: 720;
+}
+
+.trait-row i {
+  display: grid;
+  gap: 0.28rem;
+  grid-template-columns: repeat(5, minmax(0, 1fr));
+}
+
+.trait-row b {
+  background: rgba(23, 32, 29, 0.11);
+  border-radius: 999px;
+  display: block;
+  height: 9px;
+}
+
+.trait-row b[data-filled="true"] {
+  background: var(--net);
 }
 
 .glossary-list {
@@ -762,7 +1187,9 @@ footer {
 @media (max-width: 980px) {
   .hero,
   .chapter,
-  .map-grid {
+  .map-grid,
+  .shapes-section,
+  .plant-layout {
     grid-template-columns: 1fr;
   }
 
@@ -791,6 +1218,10 @@ footer {
   }
 
   .myth-grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  .shape-grid {
     grid-template-columns: repeat(2, minmax(0, 1fr));
   }
 }
@@ -827,7 +1258,8 @@ footer {
 
   .control-grid,
   .glossary-list,
-  .myth-grid {
+  .myth-grid,
+  .shape-grid {
     grid-template-columns: 1fr;
   }
 
@@ -853,8 +1285,81 @@ footer {
     columns: 1;
   }
 
+  .provided-list ul {
+    columns: 1;
+  }
+
+  .trait-row {
+    grid-template-columns: 1fr;
+  }
+
   .method-card {
     grid-template-columns: 1fr;
+  }
+}
+
+@keyframes draw-line {
+  to {
+    stroke-dashoffset: 0;
+  }
+}
+
+@keyframes copy-rise {
+  from {
+    opacity: 0;
+    transform: translateY(16px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes section-reveal {
+  from {
+    opacity: 0.2;
+    transform: translateY(24px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes fade-in {
+  from {
+    opacity: 0;
+  }
+}
+
+@keyframes annotation-enter {
+  from {
+    opacity: 0;
+    transform: translateY(6px);
+  }
+}
+
+@keyframes warning-pulse {
+  0%,
+  100% {
+    opacity: 0.25;
+    transform: scale(0.96);
+  }
+  50% {
+    opacity: 0.72;
+    transform: scale(1.08);
+  }
+}
+
+@keyframes flow-move {
+  to {
+    stroke-dashoffset: -52;
+  }
+}
+
+@keyframes charge-ring {
+  to {
+    stroke-dashoffset: -32;
   }
 }
 
@@ -866,5 +1371,28 @@ footer {
     animation-iteration-count: 1 !important;
     scroll-behavior: auto !important;
     transition-duration: 0.001ms !important;
+  }
+
+  .hero-demand,
+  .hero-solar,
+  .hero-wire,
+  .finance-line {
+    stroke-dashoffset: 0 !important;
+  }
+
+  .chapter,
+  .myths-section,
+  .glossary-section,
+  .methodology,
+  .shapes-section {
+    animation: none !important;
+    opacity: 1 !important;
+    transform: none !important;
+  }
+
+  .flow-pulse,
+  .battery-charge,
+  .warning-ring {
+    display: none !important;
   }
 }

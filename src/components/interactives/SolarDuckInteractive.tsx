@@ -1,6 +1,5 @@
 "use client";
 
-import { scaleLinear } from "d3-scale";
 import { SunMedium } from "lucide-react";
 import { useMemo, useState } from "react";
 import { HOURS } from "@/lib/model/curve";
@@ -12,9 +11,23 @@ const width = 760;
 const height = 420;
 const margin = { top: 30, right: 34, bottom: 42, left: 42 };
 
+function rounded(value: number) {
+  return Math.round(value * 1000) / 1000;
+}
+
+function createScale(domain: [number, number], range: [number, number]) {
+  const [domainMin, domainMax] = domain;
+  const [rangeMin, rangeMax] = range;
+
+  return (value: number) => {
+    const t = (value - domainMin) / (domainMax - domainMin);
+    return rounded(rangeMin + t * (rangeMax - rangeMin));
+  };
+}
+
 function linePath(values: number[], yDomain: [number, number]) {
-  const x = scaleLinear().domain([0, 24]).range([margin.left, width - margin.right]);
-  const y = scaleLinear().domain(yDomain).range([height - margin.bottom, margin.top]);
+  const x = createScale([0, 24], [margin.left, width - margin.right]);
+  const y = createScale(yDomain, [height - margin.bottom, margin.top]);
 
   return values
     .map((value, index) => `${index === 0 ? "M" : "L"} ${x(HOURS[index])} ${y(value)}`)
@@ -22,8 +35,8 @@ function linePath(values: number[], yDomain: [number, number]) {
 }
 
 function curtailmentPath(curtailment: number[], solar: number[], yDomain: [number, number]) {
-  const x = scaleLinear().domain([0, 24]).range([margin.left, width - margin.right]);
-  const y = scaleLinear().domain(yDomain).range([height - margin.bottom, margin.top]);
+  const x = createScale([0, 24], [margin.left, width - margin.right]);
+  const y = createScale(yDomain, [height - margin.bottom, margin.top]);
 
   const top = solar.map((value, index) => ({
     x: x(HOURS[index]),
@@ -45,12 +58,16 @@ export function SolarDuckInteractive() {
   const [buildout, setBuildout] = useState(58);
   const state = useMemo(() => solarDuckState(buildout), [buildout]);
   const yDomain: [number, number] = [-18, 116];
-  const x = scaleLinear().domain([0, 24]).range([margin.left, width - margin.right]);
-  const y = scaleLinear().domain(yDomain).range([height - margin.bottom, margin.top]);
+  const x = createScale([0, 24], [margin.left, width - margin.right]);
+  const y = createScale(yDomain, [height - margin.bottom, margin.top]);
   const rampHour = HOURS[state.rampIndex];
   const rampY = y(state.netLoad[state.rampIndex]);
   const solarPeak = Math.max(...state.solar);
   const curtailmentVisible = state.curtailmentTotal > 0.8;
+  const rampVisible = state.eveningRamp > 11;
+  const stateSummary = curtailmentVisible
+    ? "At this buildout, solar cuts daytime demand from other sources, but noon surplus and curtailment appear before a steeper evening ramp."
+    : "At this buildout, solar is mostly absorbed by daytime demand. The system still needs power after sunset.";
 
   return (
     <div className="interactive chart-panel">
@@ -91,29 +108,33 @@ export function SolarDuckInteractive() {
             />
           )}
 
-          <path className="demand-line" d={linePath(state.demand, yDomain)} />
-          <path className="solar-line" d={linePath(state.solar, yDomain)} />
-          <path className="net-line" d={linePath(state.netLoad, yDomain)} />
+          <path className="demand-line morph-line" d={linePath(state.demand, yDomain)} />
+          <path className="solar-line morph-line" d={linePath(state.solar, yDomain)} />
+          <path className="net-line morph-line" d={linePath(state.netLoad, yDomain)} />
 
-          <line className="ramp-marker" x1={x(rampHour)} x2={x(rampHour)} y1={rampY} y2={y(84)} />
-          <text className="annotation strong" x={x(rampHour) + 10} y={Math.min(rampY, y(86)) - 12}>
-            Evening ramp
-          </text>
+          {rampVisible && (
+            <>
+              <line className="ramp-marker" x1={x(rampHour)} x2={x(rampHour)} y1={rampY} y2={y(84)} />
+              <text className="annotation strong state-annotation" x={x(rampHour) + 10} y={Math.min(rampY, y(86)) - 12}>
+                Evening ramp gets steeper
+              </text>
+            </>
+          )}
           <text className="annotation" x={x(12.2)} y={y(Math.min(solarPeak + 8, 104))}>
             Solar helps most here
           </text>
           {curtailmentVisible && (
             <>
               <text className="annotation warning" x={x(11)} y={y(solarPeak - 12)}>
-                Midday surplus
+                Midday surplus appears
               </text>
               <text className="annotation warning" x={x(13.2)} y={y(solarPeak - 24)}>
-                Curtailment
+                Curtailment begins
               </text>
             </>
           )}
           <text className="annotation" x={x(20.1)} y={y(74)}>
-            Still need power here
+            Still need power after sunset
           </text>
           <text className="direct-label demand" x={x(3)} y={y(state.demand[12]) - 10}>
             demand
@@ -126,8 +147,7 @@ export function SolarDuckInteractive() {
           </text>
         </svg>
         <figcaption id="solar-summary">
-          With solar buildout at {Math.round(buildout)}, daytime net load falls. At high buildout,
-          midday surplus appears while the evening still needs flexible power after sunset.
+          {stateSummary}
         </figcaption>
       </figure>
 

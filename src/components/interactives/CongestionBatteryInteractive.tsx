@@ -23,6 +23,13 @@ export function CongestionBatteryInteractive() {
   const scenario = useMemo(() => congestionScenario(placement), [placement]);
 
   const nodeById = new globalThis.Map(scenario.nodes.map((node) => [node.id, node]));
+  const batteryNode = nodeById.get(placement === "bottleneck" ? "substation" : placement);
+  const stateSummary =
+    placement === "bottleneck"
+      ? "Placed at the bottleneck, the battery relieves the actual constraint and the overloaded corridor calms down."
+      : placement === "solar"
+        ? "Placed near solar, the battery absorbs some surplus, but the downstream corridor can still be constrained."
+        : "Placed near the city, the battery helps local peak demand, but it does not fully clear the upstream bottleneck.";
 
   return (
     <div className="interactive map-panel">
@@ -83,6 +90,14 @@ export function CongestionBatteryInteractive() {
                       y2={`${to.y}%`}
                       filter={stress === "overloaded" ? "url(#stressGlow)" : undefined}
                     />
+                    <line
+                      className="flow-pulse"
+                      data-stress={stress}
+                      x1={`${from.x}%`}
+                      y1={`${from.y}%`}
+                      x2={`${to.x}%`}
+                      y2={`${to.y}%`}
+                    />
                     <text
                       className="flow-label"
                       x={`${(from.x + to.x) / 2}%`}
@@ -105,13 +120,19 @@ export function CongestionBatteryInteractive() {
 
               <g className="battery-node">
                 <circle
-                  cx={`${nodeById.get(placement === "bottleneck" ? "substation" : placement)?.x}%`}
-                  cy={`${nodeById.get(placement === "bottleneck" ? "substation" : placement)?.y}%`}
+                  cx={`${batteryNode?.x}%`}
+                  cy={`${batteryNode?.y}%`}
                   r="18"
                 />
+                <circle
+                  className="battery-charge"
+                  cx={`${batteryNode?.x}%`}
+                  cy={`${batteryNode?.y}%`}
+                  r="25"
+                />
                 <text
-                  x={`${nodeById.get(placement === "bottleneck" ? "substation" : placement)?.x}%`}
-                  y={`${(nodeById.get(placement === "bottleneck" ? "substation" : placement)?.y ?? 0) - 5}%`}
+                  x={`${batteryNode?.x}%`}
+                  y={`${(batteryNode?.y ?? 0) - 5}%`}
                 >
                   battery
                 </text>
@@ -121,7 +142,7 @@ export function CongestionBatteryInteractive() {
           <figcaption id="grid-summary">
             {view === "national"
               ? "The national total shows more generation than demand, but it does not show whether lines and substations can deliver it."
-              : `The battery is placed ${placementLabels[placement].toLowerCase()}. Curtailment is ${scenario.curtailment} units and the constrained corridor is ${placement === "bottleneck" ? "relieved" : "still stressed"}.`}
+              : `${stateSummary} Curtailment is ${scenario.curtailment} illustrative units.`}
           </figcaption>
         </figure>
 
@@ -134,6 +155,7 @@ export function CongestionBatteryInteractive() {
             The red corridor is the actual constraint. A battery can shift energy anywhere, but it
             reduces congestion most when it is placed where the constraint is binding.
           </p>
+          <p className="state-note">{stateSummary}</p>
         </div>
       </div>
 

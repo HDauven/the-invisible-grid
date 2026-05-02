@@ -51,14 +51,14 @@ export function congestionScenario(placement: BatteryPlacement): GridScenario {
   const reliefByPlacement: Record<BatteryPlacement, number> = {
     solar: 7,
     city: 4,
-    bottleneck: 15
+    bottleneck: 16
   };
 
   const relief = reliefByPlacement[placement];
 
   const lines = baseLines.map((line) => {
     if (line.id === "solar-substation") {
-      return { ...line, flow: line.flow - (placement === "solar" ? relief : relief * 0.35) };
+      return { ...line, flow: line.flow - (placement === "solar" ? relief : placement === "bottleneck" ? relief * 0.9 : relief * 0.35) };
     }
 
     if (line.id === "substation-city") {

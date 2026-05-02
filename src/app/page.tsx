@@ -2,6 +2,8 @@ import { ArrowDown, BookOpen, Cable, CircleGauge, SunMedium } from "lucide-react
 import { ExplainerSection } from "@/components/layout/ExplainerSection";
 import { CongestionBatteryInteractive } from "@/components/interactives/CongestionBatteryInteractive";
 import { FrequencyNeedle } from "@/components/interactives/FrequencyNeedle";
+import { NuclearFinancingInteractive } from "@/components/interactives/NuclearFinancingInteractive";
+import { PlantJobsInteractive } from "@/components/interactives/PlantJobsInteractive";
 import { SolarDuckInteractive } from "@/components/interactives/SolarDuckInteractive";
 import { glossary } from "@/content/glossary";
 import { myths } from "@/content/myths";
@@ -55,6 +57,28 @@ export default function Home() {
           A good electricity system is not built from the cheapest source alone. It is
           built from technologies whose shapes fit together.
         </p>
+      </section>
+
+      <section className="shapes-section" aria-labelledby="shapes-title">
+        <div>
+          <p className="kicker">The spine of the story</p>
+          <h2 id="shapes-title">Five Shapes Have to Fit</h2>
+        </div>
+        <div className="shape-grid">
+          {[
+            ["Time shape", "when power is produced or needed"],
+            ["Location shape", "where power is produced or needed"],
+            ["Flexibility shape", "how fast something can respond"],
+            ["Stability shape", "how it affects frequency and resilience"],
+            ["Cost/risk shape", "what hidden costs or risks it creates"]
+          ].map(([title, copy], index) => (
+            <article className="shape-card" key={title}>
+              <span>{index + 1}</span>
+              <h3>{title}</h3>
+              <p>{copy}</p>
+            </article>
+          ))}
+        </div>
       </section>
 
       <ExplainerSection
@@ -116,6 +140,44 @@ export default function Home() {
         </p>
       </ExplainerSection>
 
+      <ExplainerSection
+        id="nuclear-finance"
+        kicker="Chapter 4"
+        title="Why Nuclear Cost Changes So Much"
+        misconception="Nuclear is expensive, full stop."
+        takeaway="Nuclear cost is about time and risk, not just construction materials."
+        figure={<NuclearFinancingInteractive />}
+      >
+        <p>
+          Nuclear power plants are capital-heavy. Much of the cost is paid before the
+          plant produces any electricity.
+        </p>
+        <p>
+          Nuclear economics are dominated by capital cost, build time, financing, and
+          delay risk. Once operating, a plant can provide firm low-carbon output for
+          decades, but the path to operation matters enormously.
+        </p>
+      </ExplainerSection>
+
+      <ExplainerSection
+        id="plant-jobs"
+        kicker="Chapter 5"
+        title="Power Sources Have Different Jobs"
+        misconception="A power plant is a power plant."
+        takeaway="Technologies are not interchangeable. They have different behaviors."
+        figure={<PlantJobsInteractive />}
+      >
+        <p>
+          Different technologies solve different grid problems. Some are good at firm
+          output, some at fast response, some at daytime energy, and some at moving
+          electricity through a bottleneck.
+        </p>
+        <p>
+          The point is not to crown one technology. It is to see what each shape helps
+          with, and what it leaves for the rest of the system to solve.
+        </p>
+      </ExplainerSection>
+
       <section className="myths-section" aria-labelledby="myths-title">
         <div className="section-heading">
           <p className="kicker">Skim this</p>
@@ -123,10 +185,10 @@ export default function Home() {
         </div>
         <div className="myth-grid">
           {myths.map((item) => (
-            <article className="myth-card" key={item.myth}>
-              <p>{item.myth}</p>
-              <span>{item.better}</span>
-            </article>
+            <details className="myth-card" key={item.myth}>
+              <summary>{item.myth}</summary>
+              <p>{item.better}</p>
+            </details>
           ))}
         </div>
       </section>

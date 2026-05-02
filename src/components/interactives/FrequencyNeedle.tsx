@@ -19,6 +19,12 @@ export function FrequencyNeedle() {
 
   const target = useMemo(() => targetFrequency(demandRise, response), [demandRise, response]);
   const angle = frequencyToAngle(shownFrequency);
+  const unsafe = Math.abs(shownFrequency - 50) > 0.14;
+  const stateCaption = response
+    ? "Fast response is following the demand rise, so the needle moves back toward the balanced zone."
+    : inertia === "low"
+      ? "Low inertia makes the same imbalance show up quickly. The needle reacts faster and more nervously."
+      : "High inertia slows the movement, buying time, but it does not remove the imbalance by itself.";
 
   useEffect(() => {
     const reduceMotion =
@@ -39,7 +45,7 @@ export function FrequencyNeedle() {
   }, [target, inertia]);
 
   return (
-    <div className="interactive frequency-panel">
+    <div className="interactive frequency-panel" data-inertia={inertia} data-warning={unsafe}>
       <div className="panel-heading">
         <span>
           <Gauge aria-hidden="true" size={18} />
@@ -88,10 +94,15 @@ export function FrequencyNeedle() {
             />
             <circle className="needle-hub" r="18" />
           </g>
+          {unsafe && (
+            <circle className="warning-ring" cx="260" cy="236" r="52" />
+          )}
+          <text className="annotation inertia-label" x="260" y="306">
+            {inertia === "high" ? "slower frequency movement" : "faster frequency movement"}
+          </text>
         </svg>
         <figcaption id="frequency-summary">
-          {frequencyStatus(shownFrequency)} High inertia makes the needle move more slowly; low
-          inertia makes the same imbalance show up faster.
+          {frequencyStatus(shownFrequency)} {stateCaption}
         </figcaption>
       </figure>
 
