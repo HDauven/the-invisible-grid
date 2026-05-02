@@ -80,6 +80,7 @@ export function FrequencyNeedle() {
           <text className="gauge-zone center" x="260" y="88">
             50 Hz
           </text>
+          <line className="balance-line" x1="260" x2="260" y1="102" y2="232" />
           <text className="gauge-zone right" x="432" y="266">
             too much generation
           </text>

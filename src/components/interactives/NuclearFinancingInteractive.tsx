@@ -13,6 +13,14 @@ function money(value: number) {
   return `${formatOne(value / 1000)}bn`;
 }
 
+function eurPerMWh(value: number) {
+  return `${formatOne(value * 1_000_000)} EUR/MWh`;
+}
+
+function centsPerKWh(value: number) {
+  return `${formatOne(value * 1_000)} EUR/kWh`;
+}
+
 export function NuclearFinancingInteractive() {
   const [buildYears, setBuildYears] = useState(9);
   const [interestRate, setInterestRate] = useState(5);
@@ -21,11 +29,19 @@ export function NuclearFinancingInteractive() {
     () => nuclearFinance({ buildYears, interestRate, delayYears }),
     [buildYears, interestRate, delayYears]
   );
+  const reference = useMemo(
+    () => nuclearFinance({ buildYears: 6, interestRate: 2, delayYears: 0 }),
+    []
+  );
 
   const maxCost = Math.max(result.financedCost, result.overnightCost) * 1.12;
   const overnightWidth = (result.overnightCost / maxCost) * 100;
   const financedWidth = (result.financedCost / maxCost) * 100;
   const timelineMax = Math.max(...result.yearlySpend.map((item) => item.accumulated));
+  const maxMWhCost = Math.max(result.capitalCostPerMWh, reference.capitalCostPerMWh) * 1.18;
+  const currentMWhWidth = (result.capitalCostPerMWh / maxMWhCost) * 100;
+  const referenceMWhWidth = (reference.capitalCostPerMWh / maxMWhCost) * 100;
+  const lifetimeTWh = result.lifetimeGenerationMWh / 1_000_000;
   const points = result.yearlySpend
     .map((item, index) => {
       const x = 48 + (index / Math.max(result.yearlySpend.length - 1, 1)) * (width - 96);
@@ -50,7 +66,7 @@ export function NuclearFinancingInteractive() {
 
       <figure aria-labelledby="nuclear-summary">
         <svg className="finance-chart" viewBox={`0 0 ${width} ${height}`} role="img">
-          <text className="direct-label" x="48" y="32">
+          <text className="direct-label chart-callout" x="48" y="32">
             Money accumulates before first electricity is sold
           </text>
           <line className="axis-line" x1="48" x2={width - 48} y1="310" y2="310" />
@@ -70,11 +86,11 @@ export function NuclearFinancingInteractive() {
             );
           })}
           {delayYears > 0 && (
-            <text className="annotation warning state-annotation" x={width - 210} y="104">
+            <text className="annotation warning state-annotation chart-callout" x={width - 250} y="58">
               Delay years add cost before revenue
             </text>
           )}
-          <text className="annotation" x={width - 218} y="286">
+          <text className="annotation chart-callout" x={width - 230} y="286">
             first electricity sold here
           </text>
         </svg>
@@ -94,6 +110,30 @@ export function NuclearFinancingInteractive() {
           <span>Cost after financing and delay</span>
           <strong>{money(result.financedCost)}</strong>
           <i style={{ width: `${financedWidth}%` }} />
+        </div>
+      </div>
+
+      <div className="kwh-panel" aria-label="Illustrative capital recovery pressure">
+        <div className="kwh-intro">
+          <span>Impact on cost per kWh</span>
+          <strong>{centsPerKWh(result.capitalCostPerMWh)}</strong>
+          <p>
+            Same illustrative 1.2 GW reactor, {formatOne(lifetimeTWh)} TWh lifetime
+            output. Higher financing and delays mean more revenue is needed per unit
+            sold to recover capital.
+          </p>
+        </div>
+        <div className="kwh-bars">
+          <div>
+            <span>Reference: 6 years, 2%, no delay</span>
+            <strong>{eurPerMWh(reference.capitalCostPerMWh)}</strong>
+            <i style={{ width: `${referenceMWhWidth}%` }} />
+          </div>
+          <div>
+            <span>Current slider setting</span>
+            <strong>{eurPerMWh(result.capitalCostPerMWh)}</strong>
+            <i style={{ width: `${currentMWhWidth}%` }} />
+          </div>
         </div>
       </div>
 

@@ -100,10 +100,18 @@ export function CongestionBatteryInteractive() {
                     />
                     <text
                       className="flow-label"
+                      data-stress={stress}
                       x={`${(from.x + to.x) / 2}%`}
                       y={`${(from.y + to.y) / 2}%`}
                     >
-                      {line.flow}/{line.capacity}
+                      {stress === "overloaded" ? "over limit" : stress === "near" ? "near limit" : "within limit"}
+                    </text>
+                    <text
+                      className="flow-unit-label"
+                      x={`${(from.x + to.x) / 2}%`}
+                      y={`${(from.y + to.y) / 2 + 4}%`}
+                    >
+                      {Math.round(line.flow)} flow / {line.capacity} capacity
                     </text>
                   </g>
                 );
@@ -112,7 +120,10 @@ export function CongestionBatteryInteractive() {
               {scenario.nodes.map((node) => (
                 <g key={node.id} className="node" data-kind={node.kind}>
                   <circle cx={`${node.x}%`} cy={`${node.y}%`} r="10" />
-                  <text x={`${node.x}%`} y={`${node.y + 5}%`}>
+                  <text
+                    x={`${node.x}%`}
+                    y={`${node.y + (node.id === "city" || node.id === "substation" ? -5 : 5)}%`}
+                  >
                     {node.label}
                   </text>
                 </g>

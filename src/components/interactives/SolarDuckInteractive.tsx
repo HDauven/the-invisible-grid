@@ -62,7 +62,6 @@ export function SolarDuckInteractive() {
   const y = createScale(yDomain, [height - margin.bottom, margin.top]);
   const rampHour = HOURS[state.rampIndex];
   const rampY = y(state.netLoad[state.rampIndex]);
-  const solarPeak = Math.max(...state.solar);
   const curtailmentVisible = state.curtailmentTotal > 0.8;
   const rampVisible = state.eveningRamp > 11;
   const stateSummary = curtailmentVisible
@@ -115,25 +114,25 @@ export function SolarDuckInteractive() {
           {rampVisible && (
             <>
               <line className="ramp-marker" x1={x(rampHour)} x2={x(rampHour)} y1={rampY} y2={y(84)} />
-              <text className="annotation strong state-annotation" x={x(rampHour) + 10} y={Math.min(rampY, y(86)) - 12}>
+              <text className="annotation strong state-annotation chart-callout" x={x(rampHour) - 92} y={70}>
                 Evening ramp gets steeper
               </text>
             </>
           )}
-          <text className="annotation" x={x(12.2)} y={y(Math.min(solarPeak + 8, 104))}>
+          <text className="annotation chart-callout" x={x(9.2)} y={58}>
             Solar helps most here
           </text>
           {curtailmentVisible && (
             <>
-              <text className="annotation warning" x={x(11)} y={y(solarPeak - 12)}>
+              <text className="annotation warning chart-callout" x={x(9.2)} y={96}>
                 Midday surplus appears
               </text>
-              <text className="annotation warning" x={x(13.2)} y={y(solarPeak - 24)}>
+              <text className="annotation warning chart-callout" x={x(13.6)} y={126}>
                 Curtailment begins
               </text>
             </>
           )}
-          <text className="annotation" x={x(20.1)} y={y(74)}>
+          <text className="annotation chart-callout" x={x(18.4)} y={175}>
             Still need power after sunset
           </text>
           <text className="direct-label demand" x={x(3)} y={y(state.demand[12]) - 10}>

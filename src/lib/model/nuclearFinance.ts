@@ -11,6 +11,8 @@ export type NuclearFinanceResult = {
   delayCost: number;
   annualizedCapitalCost: number;
   capitalCostPerMWh: number;
+  simpleLifetimeCapitalPerMWh: number;
+  lifetimeGenerationMWh: number;
   yearlySpend: Array<{
     year: number;
     spend: number;
@@ -68,6 +70,7 @@ export function nuclearFinance({
   const financedCost = overnightCost + interestDuringConstruction + delayCost;
   const annualizedCapitalCost = financedCost * capitalRecoveryFactor(rate, lifetimeYears);
   const annualMWh = capacityMW * capacityFactor * 8760;
+  const lifetimeGenerationMWh = annualMWh * lifetimeYears;
 
   return {
     overnightCost,
@@ -76,6 +79,8 @@ export function nuclearFinance({
     delayCost,
     annualizedCapitalCost,
     capitalCostPerMWh: annualizedCapitalCost / annualMWh,
+    simpleLifetimeCapitalPerMWh: financedCost / lifetimeGenerationMWh,
+    lifetimeGenerationMWh,
     yearlySpend
   };
 }

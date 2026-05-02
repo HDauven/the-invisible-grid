@@ -55,48 +55,50 @@ export function PlantJobsInteractive() {
         <strong>{selected.name}</strong>
       </div>
 
-      <div className="plant-layout">
-        <div className="plant-card-grid" aria-label="Technology cards">
-          {plantProfiles.map((profile) => (
-            <button
-              key={profile.id}
-              className="plant-card"
-              data-active={profile.id === selectedId}
-              type="button"
-              aria-pressed={profile.id === selectedId}
-              onClick={() => setSelectedId(profile.id)}
-            >
-              <span>{profile.name}</span>
-              <small>{profile.description}</small>
-            </button>
-          ))}
-        </div>
-
-        <figure aria-labelledby="plant-summary">
-          <svg className="plant-chart" viewBox={`0 0 ${width} ${height}`} role="img">
-            {[0, 6, 12, 18, 24].map((tick) => (
-              <text key={tick} className="axis-label" x={x(tick)} y={height - 10} textAnchor="middle">
-                {tick === 24 ? "24h" : `${tick}:00`}
-              </text>
-            ))}
-            {[25, 50, 75, 100].map((tick) => (
-              <line key={tick} className="gridline" x1={margin.left} x2={width - margin.right} y1={y(tick)} y2={y(tick)} />
-            ))}
-            <path className="demand-line thin" d={path(state.demand)} />
-            <path className="plant-help-area" data-kind={selected.behavior} d={areaPath(state.highlight)} />
-            <path className="plant-help-line" d={path(state.highlight.map((value) => Math.max(value, 0)))} />
-            <text className="direct-label demand" x={x(2.2)} y={y(state.demand[9]) - 8}>
-              daily demand
-            </text>
-            <text className="annotation state-annotation" x={x(13.2)} y={y(102)}>
-              {selected.helps}
-            </text>
-          </svg>
-          <figcaption id="plant-summary">
-            {selected.name}: {selected.helps} {selected.limitation}
-          </figcaption>
-        </figure>
+      <div className="plant-card-grid" aria-label="Technology cards">
+        {plantProfiles.map((profile) => (
+          <button
+            key={profile.id}
+            className="plant-card"
+            data-active={profile.id === selectedId}
+            type="button"
+            aria-pressed={profile.id === selectedId}
+            onClick={() => setSelectedId(profile.id)}
+          >
+            <span>{profile.name}</span>
+            <small>{profile.description}</small>
+          </button>
+        ))}
       </div>
+
+      <figure aria-labelledby="plant-summary">
+        <svg className="plant-chart" viewBox={`0 0 ${width} ${height}`} role="img">
+          {[0, 6, 12, 18, 24].map((tick) => (
+            <text key={tick} className="axis-label" x={x(tick)} y={height - 10} textAnchor="middle">
+              {tick === 24 ? "24h" : `${tick}:00`}
+            </text>
+          ))}
+          {[25, 50, 75, 100].map((tick) => (
+            <line key={tick} className="gridline" x1={margin.left} x2={width - margin.right} y1={y(tick)} y2={y(tick)} />
+          ))}
+          <path className="demand-line thin" d={path(state.demand)} />
+          <path className="plant-help-area" data-kind={selected.behavior} d={areaPath(state.highlight)} />
+          <path className="plant-help-line" d={path(state.highlight.map((value) => Math.max(value, 0)))} />
+          <text className="direct-label demand" x={x(2.2)} y={y(state.demand[9]) - 8}>
+            daily demand
+          </text>
+          <text className="annotation state-annotation chart-callout" x={x(10.8)} y={54}>
+            {selected.helps}
+          </text>
+        </svg>
+        <figcaption id="plant-summary">
+          {selected.name}: {selected.helps} {selected.limitation}
+        </figcaption>
+      </figure>
+
+      <p className="plant-cost-note">
+        <strong>Cost lens:</strong> {selected.costNote}
+      </p>
 
       <div className="trait-panel">
         <div className="trait-heading">

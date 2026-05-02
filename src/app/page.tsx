@@ -10,8 +10,26 @@ import { myths } from "@/content/myths";
 import { sources } from "@/content/sources";
 
 export default function Home() {
+  const menuItems = [
+    ["Shapes", "shapes"],
+    ["50 Hz", "frequency"],
+    ["Solar", "solar"],
+    ["Congestion", "congestion"],
+    ["Nuclear", "nuclear-finance"],
+    ["Technologies", "plant-jobs"],
+    ["Myths", "myths-title"]
+  ];
+
   return (
     <main>
+      <nav className="chapter-menu" aria-label="Chapter menu">
+        {menuItems.map(([label, id]) => (
+          <a href={`#${id}`} key={id}>
+            {label}
+          </a>
+        ))}
+      </nav>
+
       <section className="hero" aria-labelledby="hero-title">
         <div className="hero-copy">
           <p className="eyebrow">Interactive explainer</p>
@@ -59,7 +77,7 @@ export default function Home() {
         </p>
       </section>
 
-      <section className="shapes-section" aria-labelledby="shapes-title">
+      <section className="shapes-section" id="shapes" aria-labelledby="shapes-title">
         <div>
           <p className="kicker">The spine of the story</p>
           <h2 id="shapes-title">Five Shapes Have to Fit</h2>
@@ -180,7 +198,7 @@ export default function Home() {
 
       <section className="myths-section" aria-labelledby="myths-title">
         <div className="section-heading">
-          <p className="kicker">Skim this</p>
+          <p className="kicker">Common shortcuts</p>
           <h2 id="myths-title">Things People Say About Electricity</h2>
         </div>
         <div className="myth-grid">
