@@ -55,7 +55,7 @@ export function FrequencyNeedle() {
       </div>
 
       <figure className="gauge-wrap" aria-labelledby="frequency-summary">
-        <svg viewBox="0 0 520 320" role="img" aria-describedby="frequency-summary">
+        <svg viewBox="0 0 520 360" role="img" aria-describedby="frequency-summary">
           <defs>
             <linearGradient id="gaugeBand" x1="0%" x2="100%">
               <stop offset="0%" stopColor="#d65b4a" />
@@ -66,25 +66,25 @@ export function FrequencyNeedle() {
           </defs>
           <path
             className="gauge-arc"
-            d="M 84 235 A 176 176 0 0 1 436 235"
+            d="M 84 265 A 176 176 0 0 1 436 265"
             pathLength="100"
           />
           <path
             className="gauge-arc-color"
-            d="M 84 235 A 176 176 0 0 1 436 235"
+            d="M 84 265 A 176 176 0 0 1 436 265"
             pathLength="100"
           />
-          <text className="gauge-zone left" x="88" y="266">
+          <text className="gauge-zone left" x="88" y="296">
             too little generation
           </text>
-          <text className="gauge-zone center" x="260" y="88">
+          <text className="gauge-zone center" x="260" y="56">
             50 Hz
           </text>
-          <line className="balance-line" x1="260" x2="260" y1="102" y2="232" />
-          <text className="gauge-zone right" x="432" y="266">
+          <line className="balance-line" x1="260" x2="260" y1="82" y2="262" />
+          <text className="gauge-zone right" x="432" y="296">
             too much generation
           </text>
-          <g transform="translate(260 236)">
+          <g transform="translate(260 266)">
             <line
               className="needle"
               x1="0"
@@ -96,9 +96,9 @@ export function FrequencyNeedle() {
             <circle className="needle-hub" r="18" />
           </g>
           {unsafe && (
-            <circle className="warning-ring" cx="260" cy="236" r="52" />
+            <circle className="warning-ring" cx="260" cy="266" r="52" />
           )}
-          <text className="annotation inertia-label" x="260" y="306">
+          <text className="annotation inertia-label" x="260" y="338">
             {inertia === "high" ? "slower frequency movement" : "faster frequency movement"}
           </text>
         </svg>
