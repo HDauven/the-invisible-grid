@@ -938,16 +938,12 @@ input[type="range"] {
   transform: translateY(-2px);
 }
 
-.myth-card summary {
-  cursor: pointer;
+.myth-card h3 {
   font-family: Georgia, "Times New Roman", serif;
   font-size: 1.2rem;
+  font-weight: 500;
   line-height: 1.25;
   margin: 0;
-}
-
-.myth-card summary::marker {
-  color: var(--net);
 }
 
 .myth-card p {
@@ -1638,7 +1634,7 @@ footer {
     padding: 0.85rem;
   }
 
-  .myth-card summary {
+  .myth-card h3 {
     font-size: 1.05rem;
   }
 

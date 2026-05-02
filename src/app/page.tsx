@@ -203,10 +203,10 @@ export default function Home() {
         </div>
         <div className="myth-grid">
           {myths.map((item) => (
-            <details className="myth-card" key={item.myth}>
-              <summary>{item.myth}</summary>
+            <article className="myth-card" key={item.myth}>
+              <h3>{item.myth}</h3>
               <p>{item.better}</p>
-            </details>
+            </article>
           ))}
         </div>
       </section>
