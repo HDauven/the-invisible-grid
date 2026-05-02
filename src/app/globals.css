@@ -1283,9 +1283,9 @@ input[type="range"] {
 .method-card {
   align-items: start;
   background:
-    linear-gradient(135deg, rgba(47, 111, 143, 0.2), transparent 46%),
-    #111916;
-  border: 1px solid rgba(255, 253, 248, 0.16);
+    linear-gradient(135deg, rgba(16, 45, 58, 0.22), transparent 50%),
+    #0a0f0d;
+  border: 1px solid rgba(255, 253, 248, 0.13);
   border-radius: 8px;
   color: var(--surface);
   display: grid;
