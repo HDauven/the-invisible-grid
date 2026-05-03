@@ -364,7 +364,7 @@ export default function Home() {
         <CircleGauge aria-hidden="true" size={18} />
         <span>The Invisible Grid</span>
         <Cable aria-hidden="true" size={18} />
-        <span>Illustrative MVP</span>
+        <span>Interactive explainer</span>
         <SunMedium aria-hidden="true" size={18} />
       </footer>
     </main>

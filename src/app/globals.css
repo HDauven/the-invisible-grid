@@ -1106,43 +1106,68 @@ input[type="range"] {
   stroke-width: 3;
 }
 
-.network-focus-label,
-.network-context-label,
-.network-bottleneck-label {
-  fill: var(--ink);
-  font-weight: 820;
-  paint-order: stroke;
-  stroke: rgba(255, 253, 248, 0.94);
-  stroke-linejoin: round;
+.network-map-label {
+  background: rgba(255, 253, 248, 0.78);
+  border-radius: 999px;
+  color: var(--ink);
+  font-size: 0.7rem;
+  font-weight: 780;
+  left: var(--x);
+  line-height: 1;
+  max-width: min(210px, 34vw);
+  overflow: hidden;
+  padding: 0.12rem 0.28rem;
+  pointer-events: none;
+  position: absolute;
+  text-shadow: 0 1px 0 rgba(255, 253, 248, 0.88);
+  text-overflow: ellipsis;
+  top: var(--y);
+  white-space: nowrap;
+  z-index: 2;
 }
 
-.network-focus-label {
-  font-size: 1.95px;
-  stroke-width: 0.72px;
+.network-map-label[data-anchor="middle"] {
+  transform: translate(-50%, -50%);
 }
 
-.network-context-label {
-  fill: var(--muted);
-  font-size: 1.55px;
-  font-weight: 720;
-  opacity: 0.7;
-  stroke-width: 0.62px;
+.network-map-label[data-anchor="start"] {
+  transform: translateY(-50%);
 }
 
-.network-bottleneck-label {
-  fill: var(--stress);
-  font-size: 2px;
-  stroke-width: 0.74px;
-  text-anchor: middle;
+.network-map-label[data-anchor="end"] {
+  transform: translate(-100%, -50%);
 }
 
-.network-battery-button {
+.network-map-label[data-focus="false"] {
+  color: var(--muted);
+  font-size: 0.66rem;
+  font-weight: 760;
+  opacity: 0.72;
+}
+
+.network-map-label.network-bottleneck-label {
+  background: rgba(255, 253, 248, 0.9);
+  box-shadow: 0 8px 18px rgba(194, 71, 53, 0.08);
+  color: var(--stress);
+  font-size: 0.75rem;
+  font-weight: 840;
+  z-index: 4;
+}
+
+.network-map-label.network-bottleneck-label[data-state="cleared"] {
+  color: var(--battery);
+}
+
+.network-map-label.network-bottleneck-label[data-state="reduced"] {
+  color: #b66724;
+}
+
+.network-battery-marker {
   align-items: center;
   background: rgba(255, 253, 248, 0.82);
   border: 1px dashed rgba(77, 139, 92, 0.52);
   border-radius: 999px;
   color: var(--ink);
-  cursor: pointer;
   display: inline-flex;
   font: inherit;
   font-size: 0.78rem;
@@ -1163,18 +1188,13 @@ input[type="range"] {
   z-index: 3;
 }
 
-.network-battery-button[data-active="true"] {
+.network-battery-marker[data-active="true"] {
   background: rgba(77, 139, 92, 0.18);
   border-color: rgba(77, 139, 92, 0.72);
   border-style: solid;
   box-shadow: 0 0 0 7px rgba(77, 139, 92, 0.08);
   opacity: 1;
   transform: translate(-50%, calc(-50% - 1px));
-}
-
-.network-battery-button:focus-visible {
-  outline: 3px solid rgba(38, 118, 165, 0.32);
-  outline-offset: 3px;
 }
 
 .schematic-map {
@@ -2853,24 +2873,24 @@ footer {
     stroke-width: 8;
   }
 
-  .network-context-label {
+  .network-map-label[data-focus="false"] {
     display: none;
   }
 
-  .network-focus-label {
-    font-size: 1.9px;
+  .network-map-label {
+    font-size: 0.65rem;
   }
 
-  .network-bottleneck-label {
-    font-size: 1.85px;
+  .network-map-label.network-bottleneck-label {
+    font-size: 0.64rem;
   }
 
-  .network-battery-button {
+  .network-battery-marker {
     font-size: 0.7rem;
     padding: 0.34rem 0.42rem;
   }
 
-  .network-battery-button[data-active="true"] {
+  .network-battery-marker[data-active="true"] {
     box-shadow: 0 0 0 5px rgba(77, 139, 92, 0.08);
   }
 

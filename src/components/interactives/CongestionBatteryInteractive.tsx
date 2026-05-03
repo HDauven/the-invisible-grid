@@ -33,26 +33,23 @@ const batteryPositions: Record<Exclude<BatteryPlacement, "none">, { x: number; y
 };
 
 const labelOffsets: Record<string, { x: number; y: number; anchor?: "start" | "middle" | "end" }> = {
-  offshore: { x: 2, y: -7, anchor: "middle" },
-  solar: { x: 6, y: 8, anchor: "start" },
-  city: { x: 7, y: -7, anchor: "start" },
-  industry: { x: -6, y: -10, anchor: "end" },
-  gas: { x: 0, y: 12, anchor: "middle" },
-  nuclear: { x: 7, y: 1, anchor: "start" },
-  interconnector: { x: -4, y: -7, anchor: "middle" },
-  substation: { x: 7, y: 15, anchor: "start" }
+  solar: { x: -4, y: -5, anchor: "end" },
+  city: { x: 7, y: -6, anchor: "start" },
+  substation: { x: 4, y: 10, anchor: "start" }
 };
 
 const shortNodeLabels: Record<string, string> = {
   offshore: "Offshore wind",
   solar: "Solar-heavy rural area",
-  city: "City",
+  city: "City / industry",
   industry: "Industrial cluster",
   gas: "Gas plant",
   nuclear: "Nuclear plant",
   interconnector: "Interconnector",
   substation: "Constrained station"
 };
+
+const visibleNodeLabels = new Set(["solar", "city", "substation"]);
 
 function mapXValue(value: number) {
   return 8 + value * 0.84;
@@ -173,42 +170,51 @@ export function CongestionBatteryInteractive() {
                   })}
 
                   {scenario.nodes.map((node) => {
-                    const offset = labelOffsets[node.id] ?? { x: 0, y: 10, anchor: "middle" };
                     const isFocusNode = ["solar", "substation", "city", "industry"].includes(node.id);
 
                     return (
                       <g key={node.id} className="network-node" data-kind={node.kind} data-focus={isFocusNode}>
                         <circle cx={mapXValue(node.x)} cy={mapYValue(node.y)} r={isFocusNode ? 1.45 : 1} />
-                        <text
-                          className={isFocusNode ? "network-focus-label" : "network-context-label"}
-                          x={mapXValue(node.x + offset.x)}
-                          y={mapYValue(node.y + offset.y)}
-                          textAnchor={offset.anchor ?? "middle"}
-                        >
-                          {shortNodeLabels[node.id]}
-                        </text>
                       </g>
                     );
                   })}
-
-                  <text className="network-bottleneck-label" x={mapXValue(34)} y={mapYValue(58)}>
-                    {status}
-                  </text>
                 </svg>
 
+                {scenario.nodes.filter((node) => visibleNodeLabels.has(node.id)).map((node) => {
+                  const offset = labelOffsets[node.id] ?? { x: 0, y: 10, anchor: "middle" };
+
+                  return (
+                    <span
+                      key={node.id}
+                      className="network-map-label"
+                      data-anchor={offset.anchor ?? "middle"}
+                      style={{ "--x": mapX(node.x + offset.x), "--y": mapY(node.y + offset.y) } as CSSProperties}
+                    >
+                      {shortNodeLabels[node.id]}
+                    </span>
+                  );
+                })}
+
+                <span
+                  className="network-map-label network-bottleneck-label"
+                  data-anchor="middle"
+                  data-state={corridorState}
+                  style={{ "--x": mapX(35), "--y": mapY(55) } as CSSProperties}
+                >
+                  Constrained corridor
+                </span>
+
                 {(Object.entries(batteryPositions) as Array<[Exclude<BatteryPlacement, "none">, { x: number; y: number; label: string }]>).map(([option, position]) => (
-                  <button
+                  <span
                     key={option}
-                    type="button"
-                    className="network-battery-button"
+                    className="network-battery-marker"
                     style={{ "--x": mapX(position.x), "--y": mapY(position.y) } as CSSProperties}
                     data-active={placement === option}
-                    aria-pressed={placement === option}
-                    onClick={() => setPlacement(option)}
+                    aria-hidden="true"
                   >
                     <BatteryCharging aria-hidden="true" size={16} />
                     <span>{position.label}</span>
-                  </button>
+                  </span>
                 ))}
               </div>
 
@@ -224,6 +230,19 @@ export function CongestionBatteryInteractive() {
                 >
                   No battery
                 </button>
+                {(Object.entries(batteryPositions) as Array<[Exclude<BatteryPlacement, "none">, { label: string }]>).map(
+                  ([option, position]) => (
+                    <button
+                      key={option}
+                      type="button"
+                      data-active={placement === option}
+                      aria-pressed={placement === option}
+                      onClick={() => setPlacement(option)}
+                    >
+                      {position.label}
+                    </button>
+                  )
+                )}
               </div>
             </div>
           )}
